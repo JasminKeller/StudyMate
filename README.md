@@ -1,4 +1,4 @@
-# BlogApp
+# StudyMate
 
 ## Zugriff auf die Web-App
 
