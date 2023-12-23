@@ -1,16 +1,20 @@
-# studymate
+# BlogApp
 
-A new Flutter project.
+## Zugriff auf die Web-App
 
-## Getting Started
+Die BlogApp ist hier erreichbar: [https://icy-mud-089a47d03.4.azurestaticapps.net](https://icy-mud-089a47d03.4.azurestaticapps.net)
 
-This project is a starting point for a Flutter application.
+## Automatisches Update
 
-A few resources to get you started if this is your first Flutter project:
+Dank eines integrierten GitHub Actions Workflows wird die Webseite bei jedem Push auf den `main`-Branch automatisch aktualisiert. Dieser Prozess stellt sicher, dass stets die aktuellste Version der App online ist.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+### GitHub Workflow-Übersicht
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Der Azure Static Web Apps CI/CD Workflow umfasst:
+
+1. Flutter-Environment Setup.
+2. Installation der Pakete.
+3. Web-Build der App.
+4. Deployment auf Azure Static Web Apps.
+
+Diese Schritte garantieren eine effiziente und zuverlässige Bereitstellung der neuesten App-Versionen.
