@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import '../entity/course.dart';
-import '../entity/event.dart';
-import '../providers/course_provider.dart';
-import '../services/course_respository.dart';
+import '../widgets/event_list_widget.dart';
 
 class CourseDetailScreen extends StatefulWidget {
   final Course course;
@@ -35,30 +32,3 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
 
 
 
-class EventListWidget extends StatelessWidget {
-
-  final Course course;
-
-  const EventListWidget({super.key, required this.course});
-
-  @override
-  Widget build(BuildContext context) {
-    CourseProvider courseProvider = context.watch<CourseProvider>();
-
-    return ListView.builder(
-      itemCount: course.events.length,
-      itemBuilder: (context, index) {
-        final event = course.events[index];
-        return Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Card(
-            child: ListTile(
-              title: Text(event.eventName),
-              // dense: true,
-            ),
-          ),
-        );
-      },
-    );
-  }
-}
