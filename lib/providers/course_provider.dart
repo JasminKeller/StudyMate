@@ -8,28 +8,29 @@ import '../services/course_respository.dart';
 class CourseProvider extends ChangeNotifier {
 
   bool isLoading = false;
-  List<Course> _courses = [];
+  List<Course> _course = [];
 
-  List<Course> get courses => _courses;
+  List<Course> get course => _course;
 
   CourseProvider() {
-    readCoursesWithLoadingState();
+    readCourseWithLoadingState();
   }
 
-  Future<void> readCoursesWithLoadingState() async {
+  Future<void> readCourseWithLoadingState() async {
     isLoading = true;
     notifyListeners();
-    _courses = await CourseRepository.instance.getCourses();
+    _course = await CourseRepository.instance.getCourses();
     isLoading = false;
     notifyListeners();
   }
 
   Future<void> readCourse({bool withNotifying = true}) async {
-    _courses = await CourseRepository.instance.getCourses();
+    _course = await CourseRepository.instance.getCourses();
 
     if (withNotifying) {
       notifyListeners();
     }
+
   }
 
 }

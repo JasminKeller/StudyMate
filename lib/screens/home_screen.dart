@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../entity/course.dart';
 import '../providers/course_provider.dart';
 import '../services/course_respository.dart';
 import '../widgets/course_list_widget.dart';
-import '../widgets/delete_icon_widget.dart';
 
 class HomeScreen extends StatefulWidget {
   final String title;
