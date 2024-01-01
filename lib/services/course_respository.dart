@@ -3,17 +3,17 @@ import '../entity/event.dart';
 
 class CourseRepository {
   static CourseRepository instance = CourseRepository._privateConstructor();
+
   CourseRepository._privateConstructor() {
     _courses.add(Course(id: '1', courseName: 'Mobile Computing', events: [
-      Event(id: '55555', eventName: 'Prüfung 1'),
+      Event(id: 'e1', eventName: 'Prüfung 1', eventDateTime: DateTime(2024, 6, 1), reminderDateTime: DateTime(2024, 5, 31)),
     ]));
-    _courses.add(Course(id: '2', courseName: 'Coud Computing', events: [
-      Event(id: '55555', eventName: 'Abgabe Projektarbeit'),
+    _courses.add(Course(id: '2', courseName: 'Cloud Computing', events: [
+      Event(id: 'e2', eventName: 'Abgabe Projektarbeit', eventDateTime: DateTime(2024, 7, 15)),
     ]));
-    _courses.add(Course(id: '2', courseName: 'Transferprojekt', events: [
-      Event(id: '55555', eventName: 'Projektarbeit'),
+    _courses.add(Course(id: '3', courseName: 'Transferprojekt', events: [
+      Event(id: 'e3', eventName: 'Projektarbeit', eventDateTime: DateTime(2024, 8, 20)),
     ]));
-
   }
 
   final _courses = <Course>[];
@@ -49,10 +49,19 @@ class CourseRepository {
     return course.events;
   }
 
-  Future<void> addEventToCourse(String courseId, Event event) async {
+  // In CourseRepository
+  Future<void> addEventToCourse(String courseId, String eventName, DateTime eventDateTime) async {
     var course = _courses.firstWhere((c) => c.id == courseId);
-    course.events.add(event);
+
+    Event newEvent = Event(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      eventName: eventName,
+      eventDateTime: eventDateTime,
+    );
+
+    course.events.add(newEvent);
   }
+
 
   Future<void> deleteEventFromCourse(String courseId, String eventId) async {
     var course = _courses.firstWhere((c) => c.id == courseId);
@@ -64,4 +73,5 @@ class CourseRepository {
     var index = course.events.indexWhere((e) => e.id == event.id);
     course.events[index] = event;
   }
+
 }

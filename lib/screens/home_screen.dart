@@ -43,7 +43,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     decoration: const InputDecoration(labelText: 'Neuer Kurs hinzufügen'),
                   ),
                   ElevatedButton(
-                    child: const Text('Save'),
+                    child: const Text('Hinzufügen'),
                     onPressed: () async {
                       if (newCourse.isNotEmpty) {
                         await CourseRepository.instance.addCourse(courseName: newCourse);
