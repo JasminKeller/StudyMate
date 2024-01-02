@@ -67,11 +67,51 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
     );
   }
 
+  void _editCourseName() async {
+    var textEditingController = TextEditingController(text: widget.course.courseName);
+    var newName = await showDialog<String>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Kursnamen bearbeiten'),
+        content: TextField(
+          controller: textEditingController,
+          autofocus: true,
+          decoration: const InputDecoration(hintText: 'Neuer Kursname'),
+        ),
+        actions: [
+          TextButton(
+            child: const Text('Abbrechen'),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          TextButton(
+            child: const Text('Speichern'),
+            onPressed: () {
+              Navigator.of(context).pop(textEditingController.text);
+            },
+          ),
+        ],
+      ),
+    );
+
+    if (newName != null && newName.isNotEmpty && newName != widget.course.courseName) {
+      await CourseRepository.instance.updateCourse(courseId: widget.course.id, courseName: newName);
+      setState(() {
+        widget.course.courseName = newName;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.course.courseName),
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.edit),
+            onPressed: _editCourseName,
+          ),
+        ],
       ),
       body: Center(
         child: EventListWidget(course: widget.course),
