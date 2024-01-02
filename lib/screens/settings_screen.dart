@@ -2,6 +2,8 @@ import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import '../utils/notification_helper.dart';
+
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({Key? key}) : super(key: key);
 
@@ -23,45 +25,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
         selectedTime = picked;
         // Wenn eine neue Zeit ausgewählt wird, plane die Erinnerung neu, falls der Schalter aktiviert ist
         if (isReminderOn) {
-          _checkPermissionsAndScheduleNotification();
+          NotificationHelper.checkPermissionsAndScheduleDailyNotification(selectedTime, context);
         }
       });
     }
-  }
-
-  Future<void> _checkPermissionsAndScheduleNotification() async {
-    if (await Permission.scheduleExactAlarm.request().isGranted) {
-      _scheduleDailyReminder();
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Berechtigung zum Planen genauer Alarme wurde verweigert.'),
-        ),
-      );
-    }
-  }
-
-  void _scheduleDailyReminder() {
-    DateTime now = DateTime.now();
-    DateTime scheduleAlarmDateTime = DateTime(
-      now.year,
-      now.month,
-      now.day,
-      selectedTime.hour,
-      selectedTime.minute,
-    );
-    if (scheduleAlarmDateTime.isBefore(now)) {
-      scheduleAlarmDateTime = scheduleAlarmDateTime.add(Duration(days: 1));
-    }
-    AwesomeNotifications().createNotification(
-      content: NotificationContent(
-        id: 10,
-        channelKey: 'basic_channel',
-        title: 'Geplante Erinnerung',
-        body: 'Es ist Zeit für Ihre tägliche Erinnerung!',
-      ),
-      schedule: NotificationCalendar.fromDate(date: scheduleAlarmDateTime),
-    );
   }
 
   void _sendTestNotification() {
@@ -91,7 +58,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 setState(() {
                   isReminderOn = value;
                   if (isReminderOn) {
-                    _checkPermissionsAndScheduleNotification();
+                    NotificationHelper.checkPermissionsAndScheduleDailyNotification(selectedTime, context);
                   } else {
                     AwesomeNotifications().cancel(10);
                   }

@@ -1,5 +1,5 @@
 class Event {
-  String id;
+  int id;
   String eventName;
   DateTime? eventDateTime;
   DateTime? reminderDateTime;

@@ -1,4 +1,6 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
+import 'package:studymate/utils/notification_helper.dart';
 import '../entity/course.dart';
 import '../entity/event.dart';
 import '../providers/course_provider.dart';
@@ -18,10 +20,12 @@ class EventListWidget extends StatefulWidget {
 }
 
 class _EventListWidgetState extends State<EventListWidget> {
+
   void _toggleReminder(BuildContext context, Event event) async {
     if (event.isReminderActive) {
       event.isReminderActive = false;
       event.reminderDateTime = null;
+      AwesomeNotifications().cancel(event.id!);
     } else {
       // Show date and time picker if the reminder is inactive
       final DateTime? pickedDate = await showDatePicker(
@@ -48,6 +52,14 @@ class _EventListWidgetState extends State<EventListWidget> {
 
           event.reminderDateTime = finalDateTime;
           event.isReminderActive = true;
+
+          await NotificationHelper.checkPermissionsAndScheduleSingleNotification(
+            notificationId: event.id,
+            dateTime: finalDateTime,
+            context: context,
+            title: 'Erinnerung für ${event.eventName}',
+            body: 'Erinnerung für das Event ${event.eventName} - ${widget.course.courseName} ist geplant für ${DateFormat('dd.MM.yyyy HH:mm').format(finalDateTime)}.',
+          );
         }
       }
     }

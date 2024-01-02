@@ -6,14 +6,26 @@ class CourseRepository {
 
   CourseRepository._privateConstructor() {
     _courses.add(Course(id: '1', courseName: 'Mobile Computing', events: [
-      Event(id: 'e1', eventName: 'Prüfung 1', eventDateTime: DateTime(2024, 6, 1), reminderDateTime: DateTime(2024, 5, 31)),
+      Event(id: 1, eventName: 'Prüfung 1', eventDateTime: DateTime(2024, 6, 1), reminderDateTime: DateTime(2024, 5, 31)),
     ]));
     _courses.add(Course(id: '2', courseName: 'Cloud Computing', events: [
-      Event(id: 'e2', eventName: 'Abgabe Projektarbeit', eventDateTime: DateTime(2024, 7, 15)),
+      Event(id: 2, eventName: 'Abgabe Projektarbeit', eventDateTime: DateTime(2024, 7, 15)),
     ]));
     _courses.add(Course(id: '3', courseName: 'Transferprojekt', events: [
-      Event(id: 'e3', eventName: 'Projektarbeit', eventDateTime: DateTime(2024, 8, 20)),
+      Event(id: 3, eventName: 'Projektarbeit', eventDateTime: DateTime(2024, 8, 20)),
     ]));
+  }
+
+  int _getNextEventId() {
+    int highestId = 0;
+    for (var course in _courses) {
+      for (var event in course.events) {
+        if (event.id > highestId) {
+          highestId = event.id;
+        }
+      }
+    }
+    return highestId + 1;
   }
 
   final _courses = <Course>[];
@@ -53,8 +65,10 @@ class CourseRepository {
   Future<void> addEventToCourse(String courseId, String eventName, DateTime eventDateTime) async {
     var course = _courses.firstWhere((c) => c.id == courseId);
 
+    int newEventId = _getNextEventId();
+
     Event newEvent = Event(
-      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      id: newEventId,
       eventName: eventName,
       eventDateTime: eventDateTime,
     );
