@@ -155,4 +155,30 @@ class CourseRepository {
     course.timeBookings.add(newTimeBooking);
   }
 
+  Future<void> deleteTimeBookingFromCourse(String courseId, int timeBookingId) async {
+    final course = _courses.firstWhere((c) => c.id == courseId);
+    course.timeBookings.removeWhere((booking) => booking.id == timeBookingId);
+  }
+
+  Future<void> updateTimeBookingInCourse({
+    required int timeBookingId,
+    required String courseId,
+    required DateTime startDateTime,
+    required DateTime endDateTime,
+    String? comment,
+  }) async {
+    final course = _courses.firstWhere((c) => c.id == courseId);
+    final index = course.timeBookings.indexWhere((booking) => booking.id == timeBookingId);
+
+    final updatedTimeBooking = TimeBooking(
+      id: timeBookingId,
+      comment: comment,
+      startDateTime: startDateTime,
+      endDateTime: endDateTime,
+      courseId: courseId,
+    );
+
+    course.timeBookings[index] = updatedTimeBooking;
+  }
+
 }

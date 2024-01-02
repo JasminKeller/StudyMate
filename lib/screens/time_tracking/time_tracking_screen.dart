@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import '../../providers/course_provider.dart';
 import 'package:provider/provider.dart';
-
+import '../../entity/time_booking.dart';
+import '../../providers/course_provider.dart';
 import '../../services/course_respository.dart';
 import '../../widgets/time_booking_list_widget.dart';
 
@@ -19,6 +19,7 @@ class _TimeTrackingScreenState extends State<TimeTrackingScreen> {
   String? selectedCourseId;
   DateTime? selectedStartTime;
   DateTime? selectedEndTime;
+  TimeBooking? editingBooking;
 
   String _formatDateTime(DateTime? dateTime) {
     if (dateTime == null) return 'Nicht gesetzt';
@@ -32,7 +33,6 @@ class _TimeTrackingScreenState extends State<TimeTrackingScreen> {
       builder: (BuildContext context) {
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setModalState) {
-            // MediaQuery.of(context).viewInsets.bottom gibt die Höhe der Tastatur zurück.
             final bottomInset = MediaQuery.of(context).viewInsets.bottom;
             return Padding(
               padding: EdgeInsets.only(bottom: bottomInset),
@@ -43,6 +43,7 @@ class _TimeTrackingScreenState extends State<TimeTrackingScreen> {
                   children: <Widget>[
                     DropdownButtonFormField<String>(
                       decoration: const InputDecoration(labelText: 'Kurs auswählen'),
+                      value: selectedCourseId,
                       items: Provider.of<CourseProvider>(context, listen: false)
                           .course
                           .map((course) {
@@ -73,17 +74,38 @@ class _TimeTrackingScreenState extends State<TimeTrackingScreen> {
                       },
                     ),
                     ElevatedButton(
-                      child: const Text('Buchen'),
+                      child: Text(editingBooking == null ? 'Buchen' : 'Anpassen'),
                       onPressed: () async {
                         if (selectedCourseId != null && selectedStartTime != null && selectedEndTime != null) {
-                          await CourseRepository.instance.addTimeBookingToCourse(
-                            courseId: selectedCourseId!,
-                            startDateTime: selectedStartTime!,
-                            endDateTime: selectedEndTime!,
-                            comment: commentController.text.isEmpty ? null : commentController.text,
-                          );
+                          String comment = commentController.text.isEmpty ? 'Kein Kommentar' : commentController.text;
+
+                          if (editingBooking == null) {
+                            // Neue Zeitbuchung anlegen
+                            await CourseRepository.instance.addTimeBookingToCourse(
+                              courseId: selectedCourseId!,
+                              startDateTime: selectedStartTime!,
+                              endDateTime: selectedEndTime!,
+                              comment: comment,
+                            );
+                          } else {
+                            // Zeitbuchung anpassen
+                            await CourseRepository.instance.updateTimeBookingInCourse(
+                              timeBookingId: editingBooking!.id,
+                              courseId: selectedCourseId!,
+                              startDateTime: selectedStartTime!,
+                              endDateTime: selectedEndTime!,
+                              comment: comment,
+                            );
+                          }
+                          Provider.of<CourseProvider>(context, listen: false).readCourseWithLoadingState();
                           Navigator.of(context).pop();
-                          setState(() {});
+                          setState(() {
+                            editingBooking = null;
+                            selectedCourseId = null;
+                            selectedStartTime = null;
+                            selectedEndTime = null;
+                            commentController.clear();
+                          });
                         }
                       },
                     ),
@@ -97,10 +119,23 @@ class _TimeTrackingScreenState extends State<TimeTrackingScreen> {
     );
   }
 
+  void _showEditTimeBookingSheet(BuildContext context, TimeBooking booking) {
+    selectedCourseId = booking.courseId;
+    selectedStartTime = booking.startDateTime;
+    selectedEndTime = booking.endDateTime;
+    commentController.text = booking.comment ?? '';
+    editingBooking = booking;
+
+    _showAddTimeBookingSheet(context);
+  }
+
+  void editTimeBooking(TimeBooking booking) {
+    _showEditTimeBookingSheet(context, booking);
+  }
 
   Future<void> _pickDateTime(BuildContext context, StateSetter setModalState, {required bool isStartTime}) async {
     final currentDate = DateTime.now();
-    final initialDate = selectedStartTime ?? currentDate;
+    final initialDate = isStartTime ? selectedStartTime ?? currentDate : selectedEndTime ?? currentDate;
     final pickedDate = await showDatePicker(
       context: context,
       initialDate: initialDate,
@@ -144,7 +179,6 @@ class _TimeTrackingScreenState extends State<TimeTrackingScreen> {
 
   @override
   void dispose() {
-
     commentController.dispose();
     commentFocusNode.dispose();
     super.dispose();
@@ -160,7 +194,7 @@ class _TimeTrackingScreenState extends State<TimeTrackingScreen> {
         title: const Text('Zeiterfassung'),
       ),
       body: hasTimeBookings
-          ? TimeBookingListWidget()
+          ? TimeBookingListWidget(onEdit: editTimeBooking)
           : const Center(
         child: Text(
           'Keine Zeitbuchungen vorhanden. Tippen Sie auf das Plus-Icon, um eine neue Zeitbuchung hinzuzufügen.',
@@ -174,8 +208,4 @@ class _TimeTrackingScreenState extends State<TimeTrackingScreen> {
       ),
     );
   }
-}
-
-extension on DateTime {
-  TimeOfDay get timeOfDay => TimeOfDay(hour: hour, minute: minute);
 }

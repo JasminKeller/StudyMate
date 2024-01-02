@@ -6,6 +6,10 @@ import '../entity/course.dart';
 import '../entity/time_booking.dart';
 
 class TimeBookingListWidget extends StatefulWidget {
+  final Function(TimeBooking) onEdit;
+
+  const TimeBookingListWidget({Key? key, required this.onEdit}) : super(key: key);
+
   @override
   _TimeBookingListWidgetState createState() => _TimeBookingListWidgetState();
 }
@@ -60,6 +64,7 @@ class _TimeBookingListWidgetState extends State<TimeBookingListWidget> {
               title: Text(booking.comment ?? 'Kein Kommentar'),
               subtitle: Text(formattedDateTime),
               trailing: Text(_formatDuration(booking.durationInMinutes)),
+              onTap: () => widget.onEdit(booking),
             );
           }).toList(),
         );
