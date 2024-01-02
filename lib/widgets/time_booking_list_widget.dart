@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../../providers/course_provider.dart';
 import '../entity/course.dart';
+import '../entity/time_booking.dart';
 
 class TimeBookingListWidget extends StatefulWidget {
   @override
@@ -19,18 +20,20 @@ class _TimeBookingListWidgetState extends State<TimeBookingListWidget> {
         .where((course) => course.timeBookings.isNotEmpty)
         .toList();
 
-    // Drucken der Kurse und ihrer Buchungen
-    print("Gefundene Kurse mit Buchungen: ${coursesWithBookings.length}");
-    for (var course in coursesWithBookings) {
-      print("Kurs: ${course.courseName}, Buchungen: ${course.timeBookings.length}");
-    }
-
     return ListView.builder(
       itemCount: coursesWithBookings.length,
       itemBuilder: (BuildContext context, int index) {
         Course course = coursesWithBookings[index];
+        String totalDuration = _calculateTotalDuration(course.timeBookings);
+
         return ExpansionTile(
-          title: Text(course.courseName),
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(course.courseName),
+              Text(totalDuration),
+            ],
+          ),
           onExpansionChanged: (bool expanded) {
             setState(() {
               courseExpansionState[course.id] = expanded;
@@ -38,10 +41,24 @@ class _TimeBookingListWidgetState extends State<TimeBookingListWidget> {
           },
           initiallyExpanded: courseExpansionState[course.id] ?? false,
           children: course.timeBookings.map((booking) {
+            final startDateTime = booking.startDateTime;
+            final endDateTime = booking.endDateTime;
+            final isSameDay = startDateTime.day == endDateTime.day &&
+                startDateTime.month == endDateTime.month &&
+                startDateTime.year == endDateTime.year;
+
+            String formattedDateTime = _formatDateTime(startDateTime);
+            if (!isSameDay) {
+              formattedDateTime += ' - ';
+              formattedDateTime += _formatDateTime(endDateTime);
+            } else {
+              formattedDateTime += ', ${_formatTime(startDateTime)} - ${_formatTime(endDateTime)}';
+            }
+
             return ListTile(
               leading: const Icon(Icons.access_time),
               title: Text(booking.comment ?? 'Kein Kommentar'),
-              subtitle: Text('Von ${_formatDateTime(booking.startDateTime)} bis ${_formatDateTime(booking.endDateTime)}'),
+              subtitle: Text(formattedDateTime),
               trailing: Text(_formatDuration(booking.durationInMinutes)),
             );
           }).toList(),
@@ -50,13 +67,27 @@ class _TimeBookingListWidgetState extends State<TimeBookingListWidget> {
     );
   }
 
+  String _calculateTotalDuration(List<TimeBooking> timeBookings) {
+    int totalMinutes = 0;
+    for (var booking in timeBookings) {
+      totalMinutes += booking.durationInMinutes;
+    }
+    final hours = totalMinutes ~/ 60;
+    final minutes = totalMinutes % 60;
+    return '${hours}h ${minutes}min';
+  }
+
+  String _formatTime(DateTime dateTime) {
+    return DateFormat('HH:mm').format(dateTime);
+  }
+
   String _formatDateTime(DateTime dateTime) {
-    return DateFormat('dd.MM.yyyy, HH:mm').format(dateTime);
+    return DateFormat('dd.MM.yyyy').format(dateTime);
   }
 
   String _formatDuration(int totalMinutes) {
     final hours = totalMinutes ~/ 60;
     final minutes = totalMinutes % 60;
-    return hours > 0 ? '${hours}h ${minutes}min' : '${minutes}min';
+    return '${hours}h ${minutes}min';
   }
 }
