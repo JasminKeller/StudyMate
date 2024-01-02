@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../providers/course_provider.dart';
 import '../entity/course.dart';
 import '../entity/time_booking.dart';
+import '../services/course_respository.dart';
 
 class TimeBookingListWidget extends StatefulWidget {
   final Function(TimeBooking) onEdit;
@@ -59,12 +60,27 @@ class _TimeBookingListWidgetState extends State<TimeBookingListWidget> {
               formattedDateTime += ', ${_formatTime(startDateTime)} - ${_formatTime(endDateTime)}';
             }
 
-            return ListTile(
-              leading: const Icon(Icons.access_time),
-              title: Text(booking.comment ?? 'Kein Kommentar'),
-              subtitle: Text(formattedDateTime),
-              trailing: Text(_formatDuration(booking.durationInMinutes)),
-              onTap: () => widget.onEdit(booking),
+            return Dismissible(
+              key: Key(booking.id.toString()),
+              direction: DismissDirection.endToStart,
+              background: Container(
+                color: Colors.red,
+                alignment: Alignment.centerRight,
+                padding: const EdgeInsets.only(right: 20.0),
+                child: const Icon(Icons.delete, color: Colors.white),
+              ),
+              onDismissed: (direction) async {
+                await CourseRepository.instance.deleteTimeBookingFromCourse(course.id, booking.id);
+
+                await Provider.of<CourseProvider>(context, listen: false).readCourse(course.id);
+              },
+              child: ListTile(
+                leading: const Icon(Icons.access_time),
+                title: Text(booking.comment ?? 'Kein Kommentar'),
+                subtitle: Text(formattedDateTime),
+                trailing: Text(_formatDuration(booking.durationInMinutes)),
+                onTap: () => widget.onEdit(booking),
+              ),
             );
           }).toList(),
         );
