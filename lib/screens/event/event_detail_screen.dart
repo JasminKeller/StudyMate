@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../entity/event.dart';
 import '../../providers/course_provider.dart';
 import '../../services/course_respository.dart';
+import '../../utils/notification_helper.dart';
 
 class EventDetailScreen extends StatefulWidget {
   final Event event;
@@ -78,6 +79,14 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
           widget.event.reminderDateTime = finalReminderDateTime;
           widget.event.isReminderActive = true;
         });
+
+        await NotificationHelper.checkPermissionsAndScheduleSingleNotification(
+          notificationId: widget.event.id,
+          dateTime: finalReminderDateTime,
+          context: context,
+          title: 'Erinnerung: ${widget.event.eventName}',
+          body: 'Ihre Erinnerung für ${widget.event.eventName} ist geplant für ${DateFormat('dd.MM.yyyy HH:mm').format(finalReminderDateTime)}',
+        );
 
         await CourseRepository.instance.updateEventFromCourse(widget.courseID, widget.event);
         CourseProvider courseProvider = context.read<CourseProvider>();

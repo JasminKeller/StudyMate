@@ -5,13 +5,13 @@ import 'event.dart';
 class Course {
   String id;
   String courseName;
-  List<Event> events = <Event>[];
+  List<Event> events;
 
   Course({
     required this.id,
     required this.courseName,
-    this.events = const <Event>[],
-  });
+    List<Event>? events,
+  }) : events = events ?? [];
 
   @override
   String toString() {
