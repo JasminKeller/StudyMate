@@ -24,13 +24,22 @@ class CourseProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> readCourse({bool withNotifying = true}) async {
+  Future<void> readCourses({bool withNotifying = true}) async {
     _course = await CourseRepository.instance.getCourses();
 
     if (withNotifying) {
       notifyListeners();
     }
 
+  }
+
+  Future<void> readCourse(String courseId) async {
+    int index = _course.indexWhere((course) => course.id == courseId);
+    if (index != -1) {
+      Course updatedCourse = await CourseRepository.instance.getCourseById(courseId);
+      _course[index] = updatedCourse;
+      notifyListeners();
+    }
   }
 
 }

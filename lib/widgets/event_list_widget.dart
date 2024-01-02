@@ -66,7 +66,7 @@ class _EventListWidgetState extends State<EventListWidget> {
 
     await CourseRepository.instance.updateEventFromCourse(widget.course.id, event);
     CourseProvider courseProvider = context.read<CourseProvider>();
-    courseProvider.readCourse();
+    courseProvider.readCourses();
 
     setState(() {});
   }

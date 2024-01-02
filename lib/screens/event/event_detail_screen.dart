@@ -48,7 +48,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
 
       await CourseRepository.instance.updateEventFromCourse(widget.courseID, widget.event);
       CourseProvider courseProvider = context.read<CourseProvider>();
-      courseProvider.readCourse();
+      courseProvider.readCourses();
     }
   }
 
@@ -90,7 +90,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
 
         await CourseRepository.instance.updateEventFromCourse(widget.courseID, widget.event);
         CourseProvider courseProvider = context.read<CourseProvider>();
-        courseProvider.readCourse();
+        courseProvider.readCourses();
       }
     }
   }
@@ -102,7 +102,33 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
 
       await CourseRepository.instance.updateEventFromCourse(widget.courseID, widget.event);
       CourseProvider courseProvider = context.read<CourseProvider>();
-      courseProvider.readCourse();
+      courseProvider.readCourses();
+    }
+  }
+
+  void _confirmDeleteEvent() async {
+    final bool confirm = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Event löschen'),
+        content: const Text('Bist du sicher, dass du dieses Event löschen möchtest?'),
+        actions: [
+          TextButton(
+            child: const Text('Abbrechen'),
+            onPressed: () => Navigator.of(context).pop(false),
+          ),
+          TextButton(
+            child: const Text('Löschen'),
+            onPressed: () => Navigator.of(context).pop(true),
+          ),
+        ],
+      ),
+    ) ?? false;
+
+    if (confirm) {
+      await CourseRepository.instance.deleteEventFromCourse(widget.courseID, widget.event.id);
+      await Provider.of<CourseProvider>(context, listen: false).readCourse(widget.courseID);
+      Navigator.of(context).pop();
     }
   }
 
@@ -113,9 +139,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
         actions: [
           IconButton(
             icon: Icon(Icons.delete),
-            onPressed: () {
-              // TODO: Löschfunktion implementieren
-            },
+            onPressed: _confirmDeleteEvent,
           ),
         ],
       ),

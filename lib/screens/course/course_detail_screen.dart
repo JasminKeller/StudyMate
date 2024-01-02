@@ -53,7 +53,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
                     if (pickedDate != null && newEventName.isNotEmpty) {
                       await CourseRepository.instance.addEventToCourse(widget.course.id, newEventName, pickedDate);
                       var courseProvider = context.read<CourseProvider>();
-                      courseProvider.readCourse();
+                      courseProvider.readCourses();
 
                       Navigator.of(context).pop();
                     }
@@ -65,6 +65,34 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
         );
       },
     );
+  }
+
+  void _confirmDeleteCourse() async {
+    bool confirm = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Kurs löschen'),
+        content: const Text('Bist du sicher, dass du diesen Kurs löschen möchtest? Alle Events und Zeitbuchungen auf diesem Kurs werden gelöscht.'),
+        actions: [
+          TextButton(
+            child: const Text('Abbrechen'),
+            onPressed: () => Navigator.of(context).pop(false),
+          ),
+          TextButton(
+            child: const Text('Löschen'),
+            onPressed: () => Navigator.of(context).pop(true),
+          ),
+        ],
+      ),
+    ) ?? false;
+
+    if (confirm) {
+      await CourseRepository.instance.deleteCourse(widget.course.id);
+      CourseProvider courseProvider = context.read<CourseProvider>();
+      courseProvider.readCourses();
+
+      Navigator.of(context).pop();
+    }
   }
 
   void _editCourseName() async {
@@ -102,14 +130,28 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.course.courseName),
+        title: Text(
+          widget.course.courseName,
+          style: const TextStyle(
+            fontSize: 20,
+          ),
+        ),
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.edit),
             onPressed: _editCourseName,
+          ),
+          IconButton(
+            icon: const Icon(Icons.delete),
+            onPressed: _confirmDeleteCourse,
           ),
         ],
       ),

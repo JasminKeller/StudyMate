@@ -81,7 +81,7 @@ class CourseRepository {
     course.courseName = courseName;
   }
 
-  Future<Course> getCourseById(int courseId) async {
+  Future<Course> getCourseById(String courseId) async {
     return _courses.firstWhere((course) => course.id == courseId);
   }
 
@@ -109,7 +109,7 @@ class CourseRepository {
   }
 
 
-  Future<void> deleteEventFromCourse(String courseId, String eventId) async {
+  Future<void> deleteEventFromCourse(String courseId, int eventId) async {
     var course = _courses.firstWhere((c) => c.id == courseId);
     course.events.removeWhere((event) => event.id == eventId);
   }
