@@ -17,8 +17,6 @@ class CourseManagementScreen extends StatefulWidget {
 
 class _CourseManagementScreenState extends State<CourseManagementScreen> {
 
-  List<String> courseList = [];
-
   void _showAddCourseModalBottomSheet() {
     showModalBottomSheet(
       context: context,
