@@ -24,7 +24,8 @@ if (flutterVersionName == null) {
 
 android {
     namespace "ch.hftm.studymate"
-    compileSdkVersion flutter.compileSdkVersion
+//  compileSdkVersion flutter.compileSdkVersion
+    compileSdkVersion 34  // 34 = Android 11 -> for awesome notifications
     ndkVersion flutter.ndkVersion
 
     compileOptions {
@@ -45,8 +46,10 @@ android {
         applicationId "ch.hftm.studymate"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
-        minSdkVersion flutter.minSdkVersion
-        targetSdkVersion flutter.targetSdkVersion
+        // minSdkVersion flutter.minSdkVersion
+        minSdkVersion 21  // 21 = Android 5.0 -> for awesome notifications
+        // targetSdkVersion flutter.targetSdkVersion
+        targetSdkVersion 34  // 30 = Android 11 -> for awesome notifications
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }

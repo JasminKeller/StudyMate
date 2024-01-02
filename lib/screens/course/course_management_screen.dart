@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../providers/course_provider.dart';
-import '../services/course_respository.dart';
-import '../widgets/course_list_widget.dart';
+import '../../providers/course_provider.dart';
+import '../../services/course_respository.dart';
+import '../../widgets/course_list_widget.dart';
+import '../settings_screen.dart';
 
-class HomeScreen extends StatefulWidget {
+class CourseManagementScreen extends StatefulWidget {
   final String title;
 
 
-  const HomeScreen({super.key, required this.title});
+  const CourseManagementScreen({super.key, required this.title});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<CourseManagementScreen> createState() => _CourseManagementScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _CourseManagementScreenState extends State<CourseManagementScreen> {
 
   List<String> courseList = [];
 
@@ -68,6 +69,16 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.settings),
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => SettingsScreen(),
+              ));
+            },
+          ),
+        ],
       ),
       body:  const CourseListWidget(),
       floatingActionButton: FloatingActionButton(
