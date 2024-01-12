@@ -4,9 +4,11 @@ import '../entity/time_booking.dart';
 
 class CourseRepository {
   static CourseRepository instance = CourseRepository._privateConstructor();
-
+  final _courses = <Course>[];
   CourseRepository._privateConstructor() {
     // Zum testen
+
+    /*
     _courses.add(Course(
       id: '1',
       courseName: 'Mobile Computing',
@@ -46,6 +48,7 @@ class CourseRepository {
     _courses.add(Course(id: '3', courseName: 'Transferprojekt', events: [
       Event(id: 3, eventName: 'Projektarbeit', eventDateTime: DateTime(2024, 8, 20)),
     ]));
+     */
   }
 
   int _getNextEventId() {
@@ -59,8 +62,6 @@ class CourseRepository {
     }
     return highestId + 1;
   }
-
-  final _courses = <Course>[];
 
   Future<List<Course>> getCourses() async {
     return _courses;

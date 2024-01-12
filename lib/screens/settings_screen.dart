@@ -1,4 +1,5 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -46,17 +47,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Einstellungen'),
+        title: const Text('Einstellungen'),
       ),
       body: ListView(
         children: [
           ListTile(
             title: Text('Tägliche Erinnerung um ${selectedTime.format(context)}'),
-            trailing: Switch(
-              value: isReminderOn,
-              onChanged: (bool value) {
+            trailing: IconButton(
+              icon: Icon(
+                isReminderOn ? Icons.notifications : Icons.notifications_off,
+                color: isReminderOn ? Colors.blue : null,
+              ),
+              onPressed: () {
                 setState(() {
-                  isReminderOn = value;
+                  isReminderOn = !isReminderOn;
                   if (isReminderOn) {
                     NotificationHelper.checkPermissionsAndScheduleDailyNotification(selectedTime, context);
                   } else {
@@ -69,12 +73,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
               _selectTime(context);
             },
           ),
-          ListTile(
-            title: ElevatedButton(
-              onPressed: _sendTestNotification,
-              child: Text('Erinnerung jetzt testen'),
+          if(kDebugMode)
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: ElevatedButton(
+                onPressed: _sendTestNotification,
+                child: const Text('Erinnerung jetzt testen'),
+              ),
             ),
-          ),
         ],
       ),
     );

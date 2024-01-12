@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../../entity/course.dart';
 import '../../providers/course_provider.dart';
 import '../../services/course_respository.dart';
+import '../../widgets/empty_state_widget.dart';
 import '../../widgets/event_list_widget.dart';
 
 class CourseDetailScreen extends StatefulWidget {
@@ -134,6 +135,21 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
     super.didChangeDependencies();
   }
 
+  Widget _buildEventContent() {
+    return Consumer<CourseProvider>(
+      builder: (context, courseProvider, child) {
+        if (widget.course.events.isEmpty) {
+          return const EmptyStateWidget(
+            iconData: Icons.event_note,
+            message: 'Keine Prüfungen oder Abgabetermine.\nTippen Sie auf das Plus-Icon, um einen neuen Event hinzuzufügen.',
+          );
+        } else {
+          return EventListWidget(course: widget.course);
+        }
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -156,11 +172,12 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
         ],
       ),
       body: Center(
-        child: EventListWidget(course: widget.course),
+        child: _buildEventContent(),
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: FloatingActionButton.extended(
         onPressed: _showAddEventModalBottomSheet,
-        child: const Icon(Icons.add),
+        icon: const Icon(Icons.add),
+        label: const Text('Event hinzufügen'),
       ),
     );
   }

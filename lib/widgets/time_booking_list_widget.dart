@@ -21,7 +21,7 @@ class _TimeBookingListWidgetState extends State<TimeBookingListWidget> {
   @override
   Widget build(BuildContext context) {
     final coursesWithBookings = Provider.of<CourseProvider>(context)
-        .course
+        .courses
         .where((course) => course.timeBookings.isNotEmpty)
         .toList();
 

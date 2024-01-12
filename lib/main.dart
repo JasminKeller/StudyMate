@@ -80,14 +80,17 @@ class _BottomNavigationState extends State<BottomNavigation> {
   int _currentIndex = 1;
 
   final List<Widget> _screens = [
-    CourseManagementScreen(title: 'Kursverwaltung'),
-    TimeTrackingScreen(),
+    const CourseManagementScreen(title: 'Kursverwaltung'),
+    const TimeTrackingScreen(),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _screens[_currentIndex],
+      body: Padding(
+        padding: const EdgeInsets.only(left: 8.0, top: 8.0, right: 8.0),
+        child: _screens[_currentIndex],
+      ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: (index) {
@@ -95,7 +98,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
             _currentIndex = index;
           });
         },
-        items: [
+        items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.school),
             label: 'Kursverwaltung',

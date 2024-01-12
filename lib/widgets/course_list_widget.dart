@@ -12,9 +12,9 @@ class CourseListWidget extends StatelessWidget {
     CourseProvider courseProvider = context.watch<CourseProvider>();
 
     return ListView.builder(
-      itemCount: courseProvider.course.length,
+      itemCount: courseProvider.courses.length,
       itemBuilder: (context, index) {
-        final course = courseProvider.course[index];
+        final course = courseProvider.courses[index];
         return Padding(
           padding: const EdgeInsets.all(8.0),
           child: Card(

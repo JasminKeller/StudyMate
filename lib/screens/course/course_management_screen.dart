@@ -3,11 +3,11 @@ import 'package:provider/provider.dart';
 import '../../providers/course_provider.dart';
 import '../../services/course_respository.dart';
 import '../../widgets/course_list_widget.dart';
+import '../../widgets/empty_state_widget.dart';
 import '../settings_screen.dart';
 
 class CourseManagementScreen extends StatefulWidget {
   final String title;
-
 
   const CourseManagementScreen({super.key, required this.title});
 
@@ -16,6 +16,7 @@ class CourseManagementScreen extends StatefulWidget {
 }
 
 class _CourseManagementScreenState extends State<CourseManagementScreen> {
+
 
   void _showAddCourseModalBottomSheet() {
     showModalBottomSheet(
@@ -49,7 +50,6 @@ class _CourseManagementScreenState extends State<CourseManagementScreen> {
                         var courseProvider = context.read<CourseProvider>();
                         courseProvider.readCourses();
                         Navigator.of(context).pop();
-
                       }
                     },
                   )
@@ -62,6 +62,22 @@ class _CourseManagementScreenState extends State<CourseManagementScreen> {
     );
   }
 
+  Widget _buildCourseContent() {
+    return Consumer<CourseProvider>(
+      builder: (context, courseProvider, child) {
+        if (courseProvider.courses.isEmpty) {
+          return const EmptyStateWidget(
+            iconData: Icons.book,
+            message: 'Keine Kurse vorhanden.\nTippen Sie auf das Plus-Icon, um einen neuen Kurs hinzuzufügen.',
+          );
+        } else {
+          return const CourseListWidget();
+        }
+      },
+    );
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -69,7 +85,7 @@ class _CourseManagementScreenState extends State<CourseManagementScreen> {
         title: Text(widget.title),
         actions: [
           IconButton(
-            icon: Icon(Icons.settings),
+            icon: const Icon(Icons.settings),
             onPressed: () {
               Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => SettingsScreen(),
@@ -78,10 +94,11 @@ class _CourseManagementScreenState extends State<CourseManagementScreen> {
           ),
         ],
       ),
-      body:  const CourseListWidget(),
-      floatingActionButton: FloatingActionButton(
+      body: _buildCourseContent(),
+      floatingActionButton: FloatingActionButton.extended(
         onPressed: _showAddCourseModalBottomSheet,
-        child: const Icon(Icons.add),
+        icon: const Icon(Icons.add),
+        label: const Text('Kurs hinzufügen'),
       ),
     );
   }

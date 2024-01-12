@@ -4,7 +4,9 @@ import 'package:provider/provider.dart';
 import '../../entity/time_booking.dart';
 import '../../providers/course_provider.dart';
 import '../../services/course_respository.dart';
+import '../../widgets/empty_state_widget.dart';
 import '../../widgets/time_booking_list_widget.dart';
+import '../settings_screen.dart';
 
 class TimeTrackingScreen extends StatefulWidget {
   const TimeTrackingScreen({Key? key}) : super(key: key);
@@ -45,7 +47,7 @@ class _TimeTrackingScreenState extends State<TimeTrackingScreen> {
                       decoration: const InputDecoration(labelText: 'Kurs auswählen'),
                       value: selectedCourseId,
                       items: Provider.of<CourseProvider>(context, listen: false)
-                          .course
+                          .courses
                           .map((course) {
                         return DropdownMenuItem(
                           value: course.id,
@@ -184,28 +186,46 @@ class _TimeTrackingScreenState extends State<TimeTrackingScreen> {
     super.dispose();
   }
 
+
   @override
   Widget build(BuildContext context) {
-    final courses = Provider.of<CourseProvider>(context).course;
-    bool hasTimeBookings = courses.any((course) => course.timeBookings.isNotEmpty);
+    final courseProvider = Provider.of<CourseProvider>(context);
+    final bool hasCourses = courseProvider.courses.isNotEmpty;
+    final bool hasTimeBookings = courseProvider.courses.any((course) => course.timeBookings.isNotEmpty);
+
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Zeiterfassung'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.settings),
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => SettingsScreen(),
+              ));
+            },
+          ),
+        ],
       ),
-      body: hasTimeBookings
+      body: hasCourses
+          ? (hasTimeBookings
           ? TimeBookingListWidget(onEdit: editTimeBooking)
-          : const Center(
-        child: Text(
-          'Keine Zeitbuchungen vorhanden. Tippen Sie auf das Plus-Icon, um eine neue Zeitbuchung hinzuzufügen.',
-          style: TextStyle(fontSize: 16.0),
-          textAlign: TextAlign.center,
-        ),
+          : const EmptyStateWidget(
+              iconData: Icons.timer,
+              message: 'Keine Zeitbuchungen vorhanden.\nErstellen Sie eine neue Zeitbuchung für einen Kurs.',
+      ))
+          : const EmptyStateWidget(
+              iconData: Icons.book,
+              message: 'Bitte erstellen Sie zuerst Kurse, bevor Sie Zeitbuchungen vornehmen können.',
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: hasCourses
+          ? FloatingActionButton.extended(
         onPressed: () => _showAddTimeBookingSheet(context),
-        child: const Icon(Icons.add),
-      ),
+        icon: const Icon(Icons.add),
+        label: const Text('Zeitbuchung hinzufügen'),
+      )
+          : null, // Plus-Icon ausblenden, wenn keine Kurse vorhanden sind
     );
   }
 }
