@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:studymate/screens/time_tracking/add_time_booking_screen.dart';
+import 'package:studymate/screens/time_tracking/add_update_time_booking_screen.dart';
 import '../../entity/time_booking.dart';
 import '../../providers/course_provider.dart';
 import '../../widgets/empty_state_widget.dart';
@@ -24,7 +24,7 @@ class _TimeTrackingScreenState extends State<TimeTrackingScreen> {
 
     void _navigateToAddTimeBookingScreen(TimeBooking? booking) {
       Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) => AddTimeBookingScreen(booking: booking),
+        builder: (context) => AddOrUpdateTimeBookingScreen(booking: booking),
       ));
     }
 

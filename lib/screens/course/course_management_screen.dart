@@ -26,6 +26,7 @@ class _CourseManagementScreenState extends State<CourseManagementScreen> {
         String newCourse = '';
         var textEditingController = TextEditingController();
         return DraggableScrollableSheet(
+          initialChildSize: 0.55,
           expand: false,
           builder: (_, controller) => Container(
             padding: const EdgeInsets.all(16),
@@ -41,18 +42,17 @@ class _CourseManagementScreenState extends State<CourseManagementScreen> {
                       newCourse = value;
                     },
                     decoration: const InputDecoration(labelText: 'Neuer Kurs hinzufügen'),
+                    onEditingComplete: () {
+                      _addCourse(newCourse);
+                    },
                   ),
+                  const SizedBox(height: 30),
                   ElevatedButton(
                     child: const Text('Hinzufügen'),
-                    onPressed: () async {
-                      if (newCourse.isNotEmpty) {
-                        await CourseRepository.instance.addCourse(courseName: newCourse);
-                        var courseProvider = context.read<CourseProvider>();
-                        courseProvider.readCourses();
-                        Navigator.of(context).pop();
-                      }
+                    onPressed: () {
+                      _addCourse(newCourse);
                     },
-                  )
+                  ),
                 ],
               ),
             ),
@@ -60,6 +60,16 @@ class _CourseManagementScreenState extends State<CourseManagementScreen> {
         );
       },
     );
+  }
+
+
+  void _addCourse(String newCourse) async {
+    if (newCourse.isNotEmpty) {
+      await CourseRepository.instance.addCourse(courseName: newCourse);
+      var courseProvider = context.read<CourseProvider>();
+      courseProvider.readCourses();
+      Navigator.of(context).pop();
+    }
   }
 
   Widget _buildCourseContent() {

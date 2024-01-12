@@ -138,7 +138,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
       appBar: AppBar(
         actions: [
           IconButton(
-            icon: Icon(Icons.delete),
+            icon: const Icon(Icons.delete),
             onPressed: _confirmDeleteEvent,
           ),
         ],
@@ -152,7 +152,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
               controller: eventNameController,
               focusNode: eventNameFocusNode, // Assign the FocusNode
               enabled: true,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Event Name',
                 labelStyle: TextStyle(fontSize: 16.0),
                 hintStyle: TextStyle(fontSize: 16.0),
@@ -164,13 +164,13 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                 _updateEventName(newName); // Handle field submission (focus lost)
               },
             ),
-            SizedBox(height: 40.0),
+            const SizedBox(height: 40.0),
             GestureDetector(
               onTap: _openDatePicker,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Row(
+                  const Row(
                     children: [
                       Icon(Icons.date_range, size: 20.0),
                       SizedBox(width: 8.0),
@@ -182,18 +182,18 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                   ),
                   Text(
                     DateFormat('d. MMMM y').format(widget.event.eventDateTime!),
-                    style: TextStyle(fontSize: 16.0),
+                    style: const TextStyle(fontSize: 16.0),
                   ),
                 ],
               ),
             ),
-            SizedBox(height: 32.0),
+            const SizedBox(height: 32.0),
             GestureDetector(
               onTap: _openReminderPicker,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Row(
+                  const Row(
                     children: [
                       Icon(Icons.alarm, size: 20.0),
                       SizedBox(width: 8.0),
@@ -207,7 +207,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                     widget.event.reminderDateTime != null
                         ? DateFormat('d. MMMM y, HH:mm').format(widget.event.reminderDateTime!)
                         : 'Keine Erinnerung',
-                    style: TextStyle(fontSize: 16.0),
+                    style: const TextStyle(fontSize: 16.0),
                   ),
                 ],
               ),

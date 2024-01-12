@@ -5,16 +5,16 @@ import '../../entity/time_booking.dart';
 import '../../providers/course_provider.dart';
 import '../../services/course_repository.dart';
 
-class AddTimeBookingScreen extends StatefulWidget {
+class AddOrUpdateTimeBookingScreen extends StatefulWidget {
   final TimeBooking? booking;
 
-  const AddTimeBookingScreen({Key? key, this.booking}) : super(key: key);
+  const AddOrUpdateTimeBookingScreen({Key? key, this.booking}) : super(key: key);
 
   @override
-  _AddTimeBookingScreenState createState() => _AddTimeBookingScreenState();
+  _AddOrUpdateTimeBookingScreenState createState() => _AddOrUpdateTimeBookingScreenState();
 }
 
-class _AddTimeBookingScreenState extends State<AddTimeBookingScreen> {
+class _AddOrUpdateTimeBookingScreenState extends State<AddOrUpdateTimeBookingScreen> {
   String? selectedCourseId;
   DateTime? selectedStartTime;
   DateTime? selectedEndTime;
@@ -104,9 +104,12 @@ class _AddTimeBookingScreenState extends State<AddTimeBookingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    String appBarTitle = widget.booking == null ? 'Neue Zeitbuchung' : 'Zeitbuchung anpassen';
+    String buttonTitle = widget.booking == null ? 'Zeitbuchung Hinzufügen' : 'Zeitbuchung Anpassen';
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Neue Zeitbuchung'),
+        title: Text(appBarTitle),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -136,7 +139,7 @@ class _AddTimeBookingScreenState extends State<AddTimeBookingScreen> {
             ),
             const SizedBox( height: 20),
             ElevatedButton(
-              child: const Text('Buchen'),
+              child: Text(buttonTitle),
               onPressed: () async {
                 if (selectedCourseId != null && selectedStartTime != null && selectedEndTime != null) {
                   String comment = commentController!.text.isEmpty ? 'Kein Kommentar' : commentController!.text;
