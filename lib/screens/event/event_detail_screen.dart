@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../../entity/event.dart';
 import '../../providers/course_provider.dart';
-import '../../services/course_respository.dart';
+import '../../services/course_repository.dart';
 import '../../utils/notification_helper.dart';
 
 class EventDetailScreen extends StatefulWidget {

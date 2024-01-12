@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../entity/course.dart';
 import '../../providers/course_provider.dart';
-import '../../services/course_respository.dart';
+import '../../services/course_repository.dart';
 import '../../widgets/empty_state_widget.dart';
 import '../../widgets/event_list_widget.dart';
 
@@ -171,8 +171,13 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
           ),
         ],
       ),
-      body: Center(
-        child: _buildEventContent(),
+      body: Column(
+        children: [
+          const SizedBox(height: 20),
+          Expanded(
+            child: _buildEventContent(),
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _showAddEventModalBottomSheet,

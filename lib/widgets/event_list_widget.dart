@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
 import '../screens/event/event_detail_screen.dart';
-import '../services/course_respository.dart';
+import '../services/course_repository.dart';
 
 class EventListWidget extends StatefulWidget {
   final Course course;

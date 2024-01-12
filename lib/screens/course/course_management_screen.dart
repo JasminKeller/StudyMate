@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/course_provider.dart';
-import '../../services/course_respository.dart';
+import '../../services/course_repository.dart';
 import '../../widgets/course_list_widget.dart';
 import '../../widgets/empty_state_widget.dart';
 import '../settings_screen.dart';
@@ -94,7 +94,14 @@ class _CourseManagementScreenState extends State<CourseManagementScreen> {
           ),
         ],
       ),
-      body: _buildCourseContent(),
+      body: Column(
+        children: [
+          const SizedBox(height: 20),
+          Expanded(
+            child: _buildCourseContent(),
+          ),
+        ],
+      ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _showAddCourseModalBottomSheet,
         icon: const Icon(Icons.add),

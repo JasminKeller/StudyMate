@@ -3,7 +3,7 @@
 import 'package:flutter/cupertino.dart';
 
 import '../entity/course.dart';
-import '../services/course_respository.dart';
+import '../services/course_repository.dart';
 
 class CourseProvider extends ChangeNotifier {
 
