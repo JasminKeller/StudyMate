@@ -2,7 +2,7 @@
 
 ## Zugriff auf die Web-App
 
-Die BlogApp ist hier erreichbar: [https://icy-mud-089a47d03.4.azurestaticapps.net](https://icy-mud-089a47d03.4.azurestaticapps.net)
+Die StudyMate WebApp ist hier erreichbar: [https://icy-mud-089a47d03.4.azurestaticapps.net](https://icy-mud-089a47d03.4.azurestaticapps.net)
 
 ## Automatisches Update
 
