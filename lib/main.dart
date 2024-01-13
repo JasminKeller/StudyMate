@@ -85,6 +85,22 @@ class _BottomNavigationState extends State<BottomNavigation> {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    _checkCourses();
+  }
+
+  void _checkCourses() async {
+    CourseProvider courseProvider = Provider.of<CourseProvider>(context, listen: false);
+    await courseProvider.readCourses();
+    if (courseProvider.courses.isEmpty) {
+      setState(() {
+        _currentIndex = 0;
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(

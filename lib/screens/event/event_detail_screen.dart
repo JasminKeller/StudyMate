@@ -92,14 +92,19 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
       );
       return;
     }
-
+    if (eventDateTime == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Datum darf nicht leer sein.')),
+      );
+      return;
+    }
     if (widget.event == null) {
       // Neues Event erstellen und hinzufügen
       await CourseRepository.instance.addEventToCourse(
         widget.courseID,
         eventName,
         eventDateTime ?? DateTime
-            .now(), // Verwenden Sie das aktuelle Datum, wenn kein Datum ausgewählt wurde
+            .now(),
       );
     } else {
       // Bestehendes Event aktualisieren
@@ -119,7 +124,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
 
     CourseProvider courseProvider = context.read<CourseProvider>();
     await courseProvider.readCourses();
-    Navigator.of(context).pop(); // Zurück zum vorherigen Bildschirm navigieren
+    Navigator.of(context).pop();
   }
 
 
@@ -209,7 +214,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
             const SizedBox(height: 15),
             _buildDateTimePicker('Datum:', eventDateTime),
             const SizedBox(height: 15),
-            _buildDateTimePicker('Erinnerung:', reminderDateTime),
+            _buildDateTimePicker('Erinnerung: (optional)', reminderDateTime),
             const SizedBox(height: 20),
             ElevatedButton(
               child: Text(buttonTitle),
