@@ -3,7 +3,7 @@ class Event {
   String eventName;
   DateTime? eventDateTime;
   DateTime? reminderDateTime;
-  bool isReminderActive; // Add the boolean property
+  bool isReminderActive;
 
   Event({
     required this.id,

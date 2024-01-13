@@ -5,6 +5,8 @@ import '../../providers/course_provider.dart';
 import '../../services/course_repository.dart';
 import '../../widgets/empty_state_widget.dart';
 import '../../widgets/event_list_widget.dart';
+import '../event/event_detail_screen.dart';
+import '../../entity/event.dart';
 
 class CourseDetailScreen extends StatefulWidget {
   final Course course;
@@ -16,55 +18,49 @@ class CourseDetailScreen extends StatefulWidget {
 }
 
 class _CourseDetailScreenState extends State<CourseDetailScreen> {
-  String newEventName = '';
 
-  void _showAddEventModalBottomSheet() {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      builder: (BuildContext context) {
-        var textEditingController = TextEditingController();
-        return DraggableScrollableSheet(
-          expand: false,
-          initialChildSize: 0.5,
-          maxChildSize: 0.5,
-          builder: (_, controller) => Container(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                TextField(
-                  autofocus: true,
-                  controller: textEditingController,
-                  onChanged: (value) {
-                    newEventName = value;
-                  },
-                  decoration: const InputDecoration(labelText: 'Neuer Event-Name'),
-                ),
-                const SizedBox(height: 10),
-                ElevatedButton(
-                  child: const Text('Hinzufügen'),
-                  onPressed: () async {
-                    DateTime? pickedDate = await showDatePicker(
-                      context: context,
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime(2000),
-                      lastDate: DateTime(2101),
-                    );
-                    if (pickedDate != null && newEventName.isNotEmpty) {
-                      await CourseRepository.instance.addEventToCourse(widget.course.id, newEventName, pickedDate);
-                      var courseProvider = context.read<CourseProvider>();
-                      courseProvider.readCourses();
-
-                      Navigator.of(context).pop();
-                    }
-                  },
-                ),
-              ],
-            ),
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          widget.course.courseName,
+          style: const TextStyle(
+            fontSize: 20,
           ),
-        );
-      },
+        ),
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.edit),
+            onPressed: _editCourseName,
+          ),
+          IconButton(
+            icon: const Icon(Icons.delete),
+            onPressed: _confirmDeleteCourse,
+          ),
+        ],
+      ),
+      body: Column(
+        children: [
+          const SizedBox(height: 20),
+          Expanded(
+            child: _buildEventContent(),
+          ),
+        ],
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () => _navigateToEventDetailScreen(null),
+        icon: const Icon(Icons.add),
+        label: const Text('Event hinzufügen'),
+      ),
+    );
+  }
+
+  void _navigateToEventDetailScreen(Event? event) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => EventDetailScreen(event: event, courseID: widget.course.id),
+      ),
     );
   }
 
@@ -130,11 +126,6 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
     }
   }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-  }
-
   Widget _buildEventContent() {
     return Consumer<CourseProvider>(
       builder: (context, courseProvider, child) {
@@ -147,43 +138,6 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
           return EventListWidget(course: widget.course);
         }
       },
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          widget.course.courseName,
-          style: const TextStyle(
-            fontSize: 20,
-          ),
-        ),
-        actions: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.edit),
-            onPressed: _editCourseName,
-          ),
-          IconButton(
-            icon: const Icon(Icons.delete),
-            onPressed: _confirmDeleteCourse,
-          ),
-        ],
-      ),
-      body: Column(
-        children: [
-          const SizedBox(height: 20),
-          Expanded(
-            child: _buildEventContent(),
-          ),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: _showAddEventModalBottomSheet,
-        icon: const Icon(Icons.add),
-        label: const Text('Event hinzufügen'),
-      ),
     );
   }
 }
