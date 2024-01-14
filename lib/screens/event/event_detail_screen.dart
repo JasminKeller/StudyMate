@@ -6,7 +6,7 @@ import '../../entity/event.dart';
 import '../../providers/course_provider.dart';
 import '../../services/course_repository.dart';
 import '../../utils/notification_helper.dart';
-import '../../widgets/lists/custom_nackbar_widget.dart';
+import '../../widgets/custom_snackbar_widget.dart';
 
 class EventDetailScreen extends StatefulWidget {
   final Event? event;

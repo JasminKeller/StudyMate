@@ -26,11 +26,11 @@ class _TimeBookingListWidgetState extends State<TimeBookingListWidget> {
         .toList();
 
     return ListView.builder(
-      itemCount: coursesWithBookings.length + 1, // Erhöhen Sie die itemCount um 1
+      itemCount: coursesWithBookings.length + 1,
       itemBuilder: (BuildContext context, int index) {
         if (index == coursesWithBookings.length) {
           // Fügen Sie hier das Padding für das letzte Element ein
-          return Padding(padding: EdgeInsets.only(bottom: 80)); // 80 ist ein Beispielwert
+          return const Padding(padding: EdgeInsets.only(bottom: 80)); // 80 ist ein Beispielwert
         }
         Course course = coursesWithBookings[index];
         return _buildCourseTile(course);

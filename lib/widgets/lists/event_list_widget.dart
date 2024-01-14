@@ -80,8 +80,11 @@ class _EventListWidgetState extends State<EventListWidget> {
     DateTime currentDate = DateTime.now();
 
     return ListView.builder(
-      itemCount: widget.course.events.length,
+      itemCount: widget.course.events.length + 1,
       itemBuilder: (context, index) {
+        if (index == widget.course.events.length) {
+          return const Padding(padding: EdgeInsets.only(bottom: 80));
+        }
         final event = widget.course.events[index];
         final formattedDate = event.eventDateTime != null
             ? DateFormat('d. MMMM').format(event.eventDateTime!)
