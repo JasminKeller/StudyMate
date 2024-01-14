@@ -25,6 +25,8 @@ class _TimeBookingDetailScreenState extends State<TimeBookingDetailScreen> {
 
   final _formKey = GlobalKey<FormState>();
 
+  bool _attemptedSubmit = false;
+
   @override
   void initState() {
     super.initState();
@@ -99,11 +101,16 @@ class _TimeBookingDetailScreenState extends State<TimeBookingDetailScreen> {
         selectedEndTime = selectedDateTime;
         endTimeController.text = DateFormat('dd.MM.yyyy, HH:mm').format(selectedDateTime);
       }
-      _formKey.currentState?.validate();
+      if (_attemptedSubmit) {
+        _formKey.currentState?.validate();
+      }
     });
   }
 
   void _saveTimeBooking() async {
+    setState(() {
+      _attemptedSubmit = true;
+    });
     if (_formKey.currentState?.validate() == true) {
       if (selectedCourseId != null && selectedStartTime != null && selectedEndTime != null) {
         String comment = commentController!.text.isEmpty ? 'Kein Kommentar' : commentController!.text;
@@ -162,7 +169,9 @@ class _TimeBookingDetailScreenState extends State<TimeBookingDetailScreen> {
                   setState(() {
                     selectedCourseId = value;
                   });
-                  _formKey.currentState?.validate();
+                  if (_attemptedSubmit) {
+                    _formKey.currentState?.validate();
+                  }
                 },
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -171,8 +180,7 @@ class _TimeBookingDetailScreenState extends State<TimeBookingDetailScreen> {
                   return null;
                 },
               ),
-
-              const SizedBox( height: 15),
+              const SizedBox( height: 25),
               TextFormField(
                 controller: startTimeController,
                 decoration: const InputDecoration(
@@ -188,7 +196,7 @@ class _TimeBookingDetailScreenState extends State<TimeBookingDetailScreen> {
                   return null;
                 },
               ),
-              const SizedBox( height: 15),
+              const SizedBox( height: 25),
               TextFormField(
                 controller: endTimeController,
                 decoration: const InputDecoration(
@@ -204,6 +212,7 @@ class _TimeBookingDetailScreenState extends State<TimeBookingDetailScreen> {
                   return null;
                 },
               ),
+              const SizedBox( height: 25),
               TextFormField(
                 controller: commentController,
                 decoration: const InputDecoration(
@@ -211,10 +220,10 @@ class _TimeBookingDetailScreenState extends State<TimeBookingDetailScreen> {
                   prefixIcon: Icon(Icons.comment),
                 ),
               ),
-              const SizedBox( height: 20),
+              const SizedBox( height: 30),
               ElevatedButton(
-                child: Text(buttonTitle),
                 onPressed: _saveTimeBooking,
+                child: Text(buttonTitle),
               ),
             ],
           ),
