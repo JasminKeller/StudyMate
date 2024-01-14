@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 import '../entity/course.dart';
 import '../entity/event.dart';
 import '../entity/time_booking.dart';
@@ -94,20 +96,37 @@ class CourseRepository {
     return course.events;
   }
 
-  // In CourseRepository
-  Future<void> addEventToCourse(String courseId, String eventName, DateTime eventDateTime) async {
+  Future<List<Event>> getEventsFromCourse( String courseId) async {
+    var course = _courses.firstWhere((c) => c.id == courseId);
+    if (kDebugMode) {
+      print('getEventsFromCourse: ${course.events}');
+    }
+    return course.events;
+  }
+
+  Future<int> addEventToCourse(
+      String courseId,
+      String eventName,
+      DateTime eventDateTime,
+      DateTime? reminderDateTime,
+      bool isReminderActive,
+      ) async {
     var course = _courses.firstWhere((c) => c.id == courseId);
 
-    int newEventId = _getNextEventId();
+    var newEventId = _getNextEventId();
 
     Event newEvent = Event(
       id: newEventId,
       eventName: eventName,
       eventDateTime: eventDateTime,
+      reminderDateTime: reminderDateTime,
+      isReminderActive: isReminderActive,
     );
-
     course.events.add(newEvent);
+
+    return newEventId;
   }
+
 
 
   Future<void> deleteEventFromCourse(String courseId, int eventId) async {

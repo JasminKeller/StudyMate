@@ -1,14 +1,14 @@
 class Event {
   int id;
   String eventName;
-  DateTime? eventDateTime;
+  DateTime eventDateTime;
   DateTime? reminderDateTime;
   bool isReminderActive;
 
   Event({
     required this.id,
     required this.eventName,
-    this.eventDateTime,
+    required this.eventDateTime,
     this.reminderDateTime,
     this.isReminderActive = false,
   });

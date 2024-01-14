@@ -1,4 +1,5 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:studymate/utils/notification_helper.dart';
 import '../../entity/course.dart';
@@ -26,6 +27,9 @@ class _EventListWidgetState extends State<EventListWidget> {
       event.isReminderActive = false;
       event.reminderDateTime = null;
       AwesomeNotifications().cancel(event.id!);
+      if (kDebugMode) {
+        print('cancel notification with id ${event.id}');
+      }
     } else {
       // Show date and time picker if the reminder is inactive
       final DateTime? pickedDate = await showDatePicker(
@@ -57,8 +61,7 @@ class _EventListWidgetState extends State<EventListWidget> {
             notificationId: event.id,
             dateTime: finalDateTime,
             context: context,
-            title: 'Erinnerung für ${event.eventName}',
-            body: 'Erinnerung für das Event ${event.eventName} - ${widget.course.courseName} ist geplant für ${DateFormat('dd.MM.yyyy HH:mm').format(finalDateTime)}.',
+            title: event.eventName,
           );
         }
       }
@@ -87,19 +90,9 @@ class _EventListWidgetState extends State<EventListWidget> {
         IconData reminderIcon = Icons.notifications_off;
         Color iconColor = Colors.grey;
 
-        if (event.reminderDateTime != null) {
-          if (event.isReminderActive) {
-            if (currentDate.isAfter(event.reminderDateTime!)) {
-              reminderIcon = Icons.notifications;
-              iconColor = Colors.grey;
-            } else {
-              reminderIcon = Icons.notifications_active;
-              iconColor = Colors.red;
-            }
-          } else {
-            reminderIcon = Icons.notifications_off;
-            iconColor = Colors.grey;
-          }
+        if (event.reminderDateTime != null && event.isReminderActive && !currentDate.isAfter(event.reminderDateTime!)) {
+          reminderIcon = Icons.notifications_active;
+          iconColor = Colors.red;
         }
 
         return GestureDetector(

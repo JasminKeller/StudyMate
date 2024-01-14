@@ -1,3 +1,5 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../entity/course.dart';
@@ -84,13 +86,29 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
     ) ?? false;
 
     if (confirm) {
-      await CourseRepository.instance.deleteCourse(widget.course.id);
+      _deleteCourseAndEvents(widget.course.id);
       CourseProvider courseProvider = context.read<CourseProvider>();
       courseProvider.readCourses();
 
       Navigator.of(context).pop();
     }
   }
+
+  Future<void> _deleteCourseAndEvents(String courseId) async {
+    final List<Event> events = await CourseRepository.instance.getEventsFromCourse(courseId);
+    for (final Event event in events) {
+      if (event.isReminderActive && event.reminderDateTime != null && event.reminderDateTime!.isAfter(DateTime.now())) {
+        AwesomeNotifications().cancel(event.id!);
+        if (kDebugMode) {
+          print('Canceled notification for event ${event.eventName} with id ${event.id}');
+        }
+      }
+    }
+    await CourseRepository.instance.deleteCourse(courseId);
+  }
+
+
+
 
   void _editCourseName() async {
     var textEditingController = TextEditingController(text: widget.course.courseName);

@@ -1,3 +1,4 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -5,6 +6,7 @@ import '../../entity/event.dart';
 import '../../providers/course_provider.dart';
 import '../../services/course_repository.dart';
 import '../../utils/notification_helper.dart';
+import '../../widgets/lists/custom_nackbar_widget.dart';
 
 class EventDetailScreen extends StatefulWidget {
   final Event? event;
@@ -17,19 +19,34 @@ class EventDetailScreen extends StatefulWidget {
 }
 
 class _EventDetailScreenState extends State<EventDetailScreen> {
+  // initialisierung der TextController und FocusNode
   late TextEditingController eventNameController;
+  late TextEditingController eventDateController;
+  late TextEditingController reminderDateController;
   late FocusNode eventNameFocusNode;
-  DateTime? eventDateTime;
+
+  DateTime? eventDate;
   DateTime? reminderDateTime;
   bool isReminderActive = false;
+
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
     super.initState();
     eventNameController =
         TextEditingController(text: widget.event?.eventName ?? '');
+    eventDateController = TextEditingController(
+        text: widget.event?.eventDateTime != null
+            ? DateFormat('d. MMMM y').format(widget.event!.eventDateTime!)
+            : '');
+    reminderDateController = TextEditingController(
+        text: widget.event?.reminderDateTime != null
+            ? DateFormat('d. MMMM y, HH:mm').format(widget.event!.reminderDateTime!)
+            : '');
     eventNameFocusNode = FocusNode();
-    eventDateTime = widget.event?.eventDateTime;
+
+    eventDate = widget.event?.eventDateTime;
     reminderDateTime = widget.event?.reminderDateTime;
     isReminderActive = widget.event?.isReminderActive ?? false;
   }
@@ -37,23 +54,36 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
   void dispose() {
     eventNameController.dispose();
     eventNameFocusNode.dispose();
+    eventDateController.dispose();
+    reminderDateController.dispose();
     super.dispose();
   }
 
   void _openDatePicker() async {
     final DateTime? pickedDate = await showDatePicker(
       context: context,
-      initialDate: eventDateTime ?? DateTime.now(),
+      initialDate: eventDate ?? DateTime.now(),
       firstDate: DateTime(2000),
       lastDate: DateTime(2101),
     );
 
     if (pickedDate != null) {
       setState(() {
-        eventDateTime = pickedDate;
+        eventDate = pickedDate;
+        eventDateController.text = DateFormat('d. MMMM y').format(pickedDate);
+        _formKey.currentState?.validate();
       });
     }
   }
+
+
+
+  void showReminderUpdatedSnackbar(bool isActivated) {
+    final message = isActivated ? 'Erinnerung aktiviert.' : 'Erinnerung deaktiviert.';
+    final icon = isActivated ? Icons.alarm_on : Icons.alarm_off;
+    showCustomSnackBar(context, message, icon: icon);
+  }
+
 
   void _openReminderPicker() async {
     final DateTime? pickedDate = await showDatePicker(
@@ -78,54 +108,86 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
             pickedTime.hour,
             pickedTime.minute,
           );
+
+          reminderDateController.text = DateFormat('d. MMMM y, HH:mm').format(reminderDateTime!);
           isReminderActive = true;
+        });
+
+      } else {
+        if (isReminderActive) {
+          setState(() {
+            isReminderActive = false;
+          });
+        }
+      }
+    } else {
+
+      if (isReminderActive) {
+        setState(() {
+          isReminderActive = false;
         });
       }
     }
   }
 
+
   void _saveEvent() async {
-    String eventName = eventNameController.text;
-    if (eventName.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Event Name darf nicht leer sein.')),
-      );
-      return;
-    }
-    if (eventDateTime == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Datum darf nicht leer sein.')),
-      );
-      return;
-    }
-    if (widget.event == null) {
-      // Neues Event erstellen und hinzufügen
-      await CourseRepository.instance.addEventToCourse(
-        widget.courseID,
-        eventName,
-        eventDateTime ?? DateTime
-            .now(),
-      );
-    } else {
-      // Bestehendes Event aktualisieren
-      if (eventName != widget.event!.eventName ||
-          eventDateTime != widget.event!.eventDateTime ||
-          reminderDateTime != widget.event!.reminderDateTime ||
-          isReminderActive != widget.event!.isReminderActive) {
+    if (_formKey.currentState?.validate() == true) {
+      String eventName = eventNameController.text;
+
+      isReminderActive = reminderDateTime != null && reminderDateTime!.isAfter(DateTime.now());
+
+      if (widget.event == null) {
+        // Neues Event erstellen und hinzufügen
+        int newEventId = await CourseRepository.instance.addEventToCourse(
+          widget.courseID,
+          eventName,
+          eventDate!,
+          reminderDateTime,
+          isReminderActive,
+        );
+        showReminderUpdatedSnackbar(isReminderActive);
+        print('newEventId: $newEventId');
+        if (isReminderActive) {
+          await NotificationHelper.checkPermissionsAndScheduleSingleNotification(
+            notificationId: newEventId,
+            dateTime: reminderDateTime!,
+            context: context,
+            title: eventName,
+          );
+        }
+
+
+      } else {
+        // Bestehendes Event aktualisieren
+        bool wasReminderUpdated = isReminderActive != widget.event!.isReminderActive;
         widget.event!.eventName = eventName;
-        widget.event!.eventDateTime = eventDateTime;
+        widget.event!.eventDateTime = eventDate!;
         widget.event!.reminderDateTime = reminderDateTime;
         widget.event!.isReminderActive = isReminderActive;
 
         await CourseRepository.instance.updateEventFromCourse(
             widget.courseID, widget.event!);
+        if (wasReminderUpdated) {
+          if (isReminderActive) {
+            await NotificationHelper.checkPermissionsAndScheduleSingleNotification(
+              notificationId: widget.event!.id,
+              dateTime: reminderDateTime!,
+              context: context,
+              title: eventName,
+            );
+          } else {
+            AwesomeNotifications().cancel(widget.event!.id!);
+          }
+        }
       }
-    }
 
-    CourseProvider courseProvider = context.read<CourseProvider>();
-    await courseProvider.readCourses();
-    Navigator.of(context).pop();
+      CourseProvider courseProvider = context.read<CourseProvider>();
+      await courseProvider.readCourses();
+      Navigator.of(context).pop();
+    }
   }
+
 
 
   void _confirmDeleteEvent() async {
@@ -150,6 +212,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
     ) ?? false;
 
     if (confirm) {
+      AwesomeNotifications().cancel(widget.event!.id!);
       await CourseRepository.instance.deleteEventFromCourse(widget.courseID, widget.event!.id);
       CourseProvider courseProvider = context.read<CourseProvider>();
       await courseProvider.readCourses();
@@ -157,43 +220,11 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
     }
   }
 
-  Widget _buildDateTimePicker(String label, DateTime? dateTime) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(label),
-        TextButton(
-          onPressed: dateTime == eventDateTime
-              ? _openDatePicker
-              : _openReminderPicker,
-          child: Text(
-            dateTime != null
-                ? DateFormat('d. MMMM y, HH:mm').format(dateTime)
-                : 'Nicht gesetzt',
-            style: TextStyle(
-              color: Theme
-                  .of(context)
-                  .colorScheme
-                  .primary,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    String appBarTitle = widget.event == null
-        ? 'Neues Event'
-        : 'Event bearbeiten';
-    String buttonTitle = widget.event == null
-        ? 'Event hinzufügen'
-        : 'Event aktualisieren';
-
     return Scaffold(
       appBar: AppBar(
-        title: Text(appBarTitle),
+        title: Text(widget.event == null ? 'Neues Event' : 'Event bearbeiten'),
         actions: [
           if (widget.event != null) IconButton(
             icon: const Icon(Icons.delete),
@@ -203,24 +234,74 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
-        child: ListView(
-          children: <Widget>[
-            const SizedBox(height: 20),
-            TextFormField(
-              controller: eventNameController,
-              focusNode: eventNameFocusNode,
-              decoration: const InputDecoration(labelText: 'Event Name'),
-            ),
-            const SizedBox(height: 15),
-            _buildDateTimePicker('Datum:', eventDateTime),
-            const SizedBox(height: 15),
-            _buildDateTimePicker('Erinnerung: (optional)', reminderDateTime),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              child: Text(buttonTitle),
-              onPressed: _saveEvent,
-            ),
-          ],
+        child: Form(
+          key: _formKey,
+          child: ListView(
+            children: <Widget>[
+              TextFormField(
+                controller: eventNameController,
+                focusNode: eventNameFocusNode,
+                decoration: const InputDecoration(labelText: 'Event Name'),
+                onChanged: (value) {
+                  _formKey.currentState?.validate();
+                },
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Event Name darf nicht leer sein.';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 15),
+              TextFormField(
+                controller: eventDateController,
+                decoration: const InputDecoration(labelText: 'Datum', prefixIcon: Icon(Icons.calendar_today),),
+                readOnly: true,
+                onTap: _openDatePicker,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Datum darf nicht leer sein.';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 15),
+              TextFormField(
+                controller: reminderDateController,
+                decoration: InputDecoration(
+                  labelText: 'Erinnerung: (Optional)',
+                  prefixIcon: const Icon(Icons.alarm),
+                  suffixIcon: reminderDateController.text.isNotEmpty
+                      ? IconButton(
+                    icon: const Icon(Icons.clear),
+                    onPressed: () {
+                      setState(() {
+                        reminderDateTime = null;
+                        reminderDateController.clear();
+                        isReminderActive = false;
+                      });
+                      showReminderUpdatedSnackbar(false);
+                      AwesomeNotifications().cancel(widget.event!.id!);
+                    },
+                  )
+                      : null,
+                ),
+                readOnly: true,
+                onTap: _openReminderPicker,
+                validator: (value) {
+                  if (reminderDateTime != null && reminderDateTime!.isBefore(DateTime.now())) {
+                    return 'Erinnerungsdatum darf nicht in der Vergangenheit liegen.';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: _saveEvent,
+                child: Text(widget.event == null ? 'Event hinzufügen' : 'Event aktualisieren'),
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -1,5 +1,7 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class NotificationHelper {
@@ -35,16 +37,20 @@ class NotificationHelper {
   }) {
     if (scheduleDateTime.isBefore(DateTime.now())) {
       return; // Geplante Zeit liegt in der Vergangenheit, keine Benachrichtigung erstellen
+    } else {
+      AwesomeNotifications().createNotification(
+        content: NotificationContent(
+          id: id,
+          channelKey: 'basic_channel',
+          title: title,
+          body: body,
+        ),
+        schedule: NotificationCalendar.fromDate(date: scheduleDateTime),
+      );
+      if (kDebugMode) {
+        print('Benachrichtigung erstellt für $title um ${DateFormat('dd.MM.yyyy HH:mm').format(scheduleDateTime)}.');
+      }
     }
-    AwesomeNotifications().createNotification(
-      content: NotificationContent(
-        id: id,
-        channelKey: 'basic_channel',
-        title: title,
-        body: body,
-      ),
-      schedule: NotificationCalendar.fromDate(date: scheduleDateTime),
-    );
   }
 
 
@@ -67,7 +73,7 @@ class NotificationHelper {
 
     await _checkPermissionsAndCreateNotification(
       context: context,
-      id: 10,
+      id: 111111,
       title: 'Geplante Erinnerung',
       body: 'Es ist Zeit für Ihre tägliche Erinnerung!',
       scheduleDateTime: scheduleAlarmDateTime,
@@ -79,16 +85,18 @@ class NotificationHelper {
     required int notificationId,
     required DateTime dateTime,
     required BuildContext context,
-    String title = 'Einmalige Erinnerung',
-    String body = 'Es ist Zeit für Ihre Erinnerung!',
+    required String title,
   }) async {
     await _checkPermissionsAndCreateNotification(
       context: context,
       id: notificationId,
-      title: title,
-      body: body,
+      title: 'Erinnerung für $title',
+      body: 'Erinnerung für $title ist geplant für ${DateFormat('dd.MM.yyyy HH:mm').format(dateTime)}.',
       scheduleDateTime: dateTime,
     );
+    if (kDebugMode) {
+      print('Erinnerung für Event $title und notificationID $notificationId geplant für ${DateFormat('dd.MM.yyyy HH:mm').format(dateTime)}.');
+    }
   }
 
 }
