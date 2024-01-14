@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../../entity/course.dart';
 import '../../providers/course_provider.dart';
 import '../../services/course_repository.dart';
+import '../../services/snackbar_service.dart';
 import '../../widgets/empty_state_widget.dart';
 import '../../widgets/lists/event_list_widget.dart';
 import '../event/event_detail_screen.dart';

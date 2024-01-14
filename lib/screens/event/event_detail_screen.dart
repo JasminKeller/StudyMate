@@ -5,8 +5,8 @@ import 'package:provider/provider.dart';
 import '../../entity/event.dart';
 import '../../providers/course_provider.dart';
 import '../../services/course_repository.dart';
+import '../../services/snackbar_service.dart';
 import '../../utils/notification_helper.dart';
-import '../../widgets/custom_snackbar_widget.dart';
 
 class EventDetailScreen extends StatefulWidget {
   final Event? event;
@@ -19,6 +19,8 @@ class EventDetailScreen extends StatefulWidget {
 }
 
 class _EventDetailScreenState extends State<EventDetailScreen> {
+  SnackbarService snackbarService = SnackbarService();
+
   // initialisierung der TextController und FocusNode
   late TextEditingController eventNameController;
   late TextEditingController eventDateController;
@@ -32,6 +34,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
   final _formKey = GlobalKey<FormState>();
 
   bool _attemptedSubmit = false;
+
 
   @override
   void initState() {
@@ -78,14 +81,6 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
         }
       });
     }
-  }
-
-
-
-  void showReminderUpdatedSnackbar(bool isActivated) {
-    final message = isActivated ? 'Erinnerung aktiviert.' : 'Erinnerung deaktiviert.';
-    final icon = isActivated ? Icons.alarm_on : Icons.alarm_off;
-    showCustomSnackBar(context, message, icon: icon);
   }
 
 
@@ -153,7 +148,6 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
           reminderDateTime,
           isReminderActive,
         );
-        showReminderUpdatedSnackbar(isReminderActive);
         print('newEventId: $newEventId');
         if (isReminderActive) {
           await NotificationHelper.checkPermissionsAndScheduleSingleNotification(
@@ -162,6 +156,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
             context: context,
             title: eventName,
           );
+          snackbarService.showReminderUpdatedSnackbar(context, true);
         }
 
 
@@ -183,6 +178,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
               context: context,
               title: eventName,
             );
+            snackbarService.showReminderUpdatedSnackbar(context, true);
           } else {
             AwesomeNotifications().cancel(widget.event!.id!);
           }
@@ -284,13 +280,15 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                       ? IconButton(
                     icon: const Icon(Icons.clear),
                     onPressed: () {
+                      if (isReminderActive) {
+                        snackbarService.showReminderUpdatedSnackbar(context, false);
+                        AwesomeNotifications().cancel(widget.event!.id!);
+                      }
                       setState(() {
                         reminderDateTime = null;
                         reminderDateController.clear();
                         isReminderActive = false;
                       });
-                      showReminderUpdatedSnackbar(false);
-                      AwesomeNotifications().cancel(widget.event!.id!);
                     },
                   )
                       : null,

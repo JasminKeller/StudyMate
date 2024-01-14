@@ -10,6 +10,7 @@ import 'package:intl/intl.dart';
 
 import '../../screens/event/event_detail_screen.dart';
 import '../../services/course_repository.dart';
+import '../../services/snackbar_service.dart';
 
 class EventListWidget extends StatefulWidget {
   final Course course;
@@ -21,12 +22,14 @@ class EventListWidget extends StatefulWidget {
 }
 
 class _EventListWidgetState extends State<EventListWidget> {
+  SnackbarService snackbarService = SnackbarService();
 
   void _toggleReminder(BuildContext context, Event event) async {
     if (event.isReminderActive) {
       event.isReminderActive = false;
       event.reminderDateTime = null;
       AwesomeNotifications().cancel(event.id!);
+      snackbarService.showReminderUpdatedSnackbar(context, false);
       if (kDebugMode) {
         print('cancel notification with id ${event.id}');
       }
@@ -63,6 +66,8 @@ class _EventListWidgetState extends State<EventListWidget> {
             context: context,
             title: event.eventName,
           );
+
+          snackbarService.showReminderUpdatedSnackbar(context, true);
         }
       }
     }

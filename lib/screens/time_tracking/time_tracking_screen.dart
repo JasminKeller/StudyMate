@@ -32,6 +32,7 @@ class _TimeTrackingScreenState extends State<TimeTrackingScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Zeiterfassung'),
+        leading: const Icon(Icons.timer),
         actions: [
           IconButton(
             icon: const Icon(Icons.settings),

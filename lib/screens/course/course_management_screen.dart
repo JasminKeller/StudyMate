@@ -93,6 +93,7 @@ class _CourseManagementScreenState extends State<CourseManagementScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
+        leading: const Icon(Icons.school),
         actions: [
           IconButton(
             icon: const Icon(Icons.settings),
