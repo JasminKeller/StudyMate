@@ -31,6 +31,8 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
 
   final _formKey = GlobalKey<FormState>();
 
+  bool _attemptedSubmit = false;
+
   @override
   void initState() {
     super.initState();
@@ -71,7 +73,9 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
       setState(() {
         eventDate = pickedDate;
         eventDateController.text = DateFormat('d. MMMM y').format(pickedDate);
-        _formKey.currentState?.validate();
+        if (_attemptedSubmit) {
+          _formKey.currentState?.validate();
+        }
       });
     }
   }
@@ -132,6 +136,9 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
 
 
   void _saveEvent() async {
+    setState(() {
+      _attemptedSubmit = true;
+    });
     if (_formKey.currentState?.validate() == true) {
       String eventName = eventNameController.text;
 
@@ -243,7 +250,9 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                 focusNode: eventNameFocusNode,
                 decoration: const InputDecoration(labelText: 'Event Name'),
                 onChanged: (value) {
-                  _formKey.currentState?.validate();
+                  if (_attemptedSubmit) {
+                    _formKey.currentState?.validate();
+                  }
                 },
                 validator: (value) {
                   if (value == null || value.isEmpty) {
