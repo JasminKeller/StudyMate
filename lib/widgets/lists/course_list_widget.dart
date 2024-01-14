@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:studymate/screens/course/course_detail_screen.dart';
 
-import '../providers/course_provider.dart';
+import '../../providers/course_provider.dart';
 
 class CourseListWidget extends StatelessWidget {
   const CourseListWidget({super.key});

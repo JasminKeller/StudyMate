@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import '../../providers/course_provider.dart';
-import '../entity/course.dart';
-import '../entity/time_booking.dart';
-import '../services/course_repository.dart';
+import '../../../providers/course_provider.dart';
+import '../../entity/course.dart';
+import '../../entity/time_booking.dart';
+import '../../services/course_repository.dart';
 
 class TimeBookingListWidget extends StatefulWidget {
   final Function(TimeBooking) onEdit;
@@ -26,12 +26,17 @@ class _TimeBookingListWidgetState extends State<TimeBookingListWidget> {
         .toList();
 
     return ListView.builder(
-      itemCount: coursesWithBookings.length,
+      itemCount: coursesWithBookings.length + 1, // Erhöhen Sie die itemCount um 1
       itemBuilder: (BuildContext context, int index) {
+        if (index == coursesWithBookings.length) {
+          // Fügen Sie hier das Padding für das letzte Element ein
+          return Padding(padding: EdgeInsets.only(bottom: 80)); // 80 ist ein Beispielwert
+        }
         Course course = coursesWithBookings[index];
         return _buildCourseTile(course);
       },
     );
+
   }
 
   ExpansionTile _buildCourseTile(Course course) {

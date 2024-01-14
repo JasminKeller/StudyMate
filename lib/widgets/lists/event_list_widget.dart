@@ -1,14 +1,14 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:studymate/utils/notification_helper.dart';
-import '../entity/course.dart';
-import '../entity/event.dart';
-import '../providers/course_provider.dart';
+import '../../entity/course.dart';
+import '../../entity/event.dart';
+import '../../providers/course_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
-import '../screens/event/event_detail_screen.dart';
-import '../services/course_repository.dart';
+import '../../screens/event/event_detail_screen.dart';
+import '../../services/course_repository.dart';
 
 class EventListWidget extends StatefulWidget {
   final Course course;

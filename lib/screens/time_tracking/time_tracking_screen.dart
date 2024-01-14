@@ -4,7 +4,8 @@ import 'package:studymate/screens/time_tracking/add_update_time_booking_screen.d
 import '../../entity/time_booking.dart';
 import '../../providers/course_provider.dart';
 import '../../widgets/empty_state_widget.dart';
-import '../../widgets/time_booking_list_widget.dart';
+
+import '../../widgets/lists/time_booking_list_widget.dart';
 import '../settings_screen.dart';
 
 class TimeTrackingScreen extends StatefulWidget {

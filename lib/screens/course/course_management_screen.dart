@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/course_provider.dart';
 import '../../services/course_repository.dart';
-import '../../widgets/course_list_widget.dart';
+import '../../widgets/lists/course_list_widget.dart';
 import '../../widgets/empty_state_widget.dart';
 import '../settings_screen.dart';
 
