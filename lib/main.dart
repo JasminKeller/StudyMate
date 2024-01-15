@@ -1,13 +1,32 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/adapters.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:studymate/providers/course_provider.dart';
+import 'package:studymate/providers/theme_provider.dart';
 import 'package:studymate/screens/course/course_management_screen.dart';
 import 'package:studymate/screens/time_tracking/time_tracking_screen.dart';
 import 'package:studymate/services/notification_controller.dart';
 import 'package:studymate/theme/theme.dart';
 
+
+const darkModeBox = 'darkMode';
+
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized(); // Stellt sicher, dass die Flutter-Bindungen initialisiert sind.
+
+  // Den Pfad zum Dokumentenverzeichnis holen und Hive initialisieren
+  final appDocumentDir = await getApplicationDocumentsDirectory();
+  Hive.init(appDocumentDir.path);
+  var settingsBox = await Hive.openBox('settings');
+  bool darkMode = settingsBox.get('darkMode', defaultValue: false);
+  if (kDebugMode) {
+    print('DarkMode: $darkMode');
+  }
+
   await AwesomeNotifications().initialize(
     null,  // for notification icon if a special one is needed
     [
@@ -19,7 +38,7 @@ void main() async {
         // defaultColor: Colors.teal,
         // ledColor: Colors.teal,
         // playSound: true,
-        // enableVibration: true,
+        enableVibration: true,
       )
     ],
     channelGroups: [
@@ -31,9 +50,12 @@ void main() async {
     await AwesomeNotifications().requestPermissionToSendNotifications();
   }
   runApp(
-    ChangeNotifierProvider<CourseProvider>(
-      create: (context) => CourseProvider(),
-      child: MyApp(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => ThemeProvider(darkMode)),
+        ChangeNotifierProvider(create: (context) => CourseProvider()),
+      ],
+      child: const MyApp(),
     ),
   );
 }
@@ -60,11 +82,13 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'StudyMate',
-      theme: lightMode,
+      themeMode: themeProvider.isDarkMode ? ThemeMode.dark : ThemeMode.light,
       darkTheme: darkMode,
+      theme: lightMode,
       home: BottomNavigation(),
     );
   }

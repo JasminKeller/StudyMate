@@ -2,7 +2,9 @@ import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
 
+import '../providers/theme_provider.dart';
 import '../utils/notification_helper.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -45,6 +47,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var themeProvider = Provider.of<ThemeProvider>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Einstellungen'),
@@ -72,6 +76,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
             onTap: () {
               _selectTime(context);
             },
+          ),
+          ListTile(
+            title: const Text('Dark Mode'),
+            trailing: Switch(
+              value: themeProvider.isDarkMode,
+              onChanged: (newValue) {
+                themeProvider.toggleDarkMode();
+              },
+            ),
           ),
           if(kDebugMode)
             Padding(

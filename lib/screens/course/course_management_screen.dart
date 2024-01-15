@@ -62,10 +62,9 @@ class _CourseManagementScreenState extends State<CourseManagementScreen> {
     );
   }
 
-
-  void _addCourse(String newCourse) async {
-    if (newCourse.isNotEmpty) {
-      await CourseRepository.instance.addCourse(courseName: newCourse);
+  void _addCourse(String newCourseName) async {
+    if (newCourseName.isNotEmpty) {
+      await CourseRepository.instance.addCourse(courseName: newCourseName);
       var courseProvider = context.read<CourseProvider>();
       courseProvider.readCourses();
       Navigator.of(context).pop();
