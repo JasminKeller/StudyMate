@@ -1,5 +1,4 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
@@ -12,6 +11,10 @@ import 'package:studymate/screens/time_tracking/time_tracking_screen.dart';
 import 'package:studymate/services/notification_controller.dart';
 import 'package:studymate/theme/theme.dart';
 
+import 'entity/course.dart';
+import 'entity/event.dart';
+import 'entity/time_booking.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); // Stellt sicher, dass die Flutter-Bindungen initialisiert sind.
@@ -21,6 +24,17 @@ void main() async {
   Hive.init(appDocumentDir.path);
   var settingsBox = await Hive.openBox('settings');
   bool darkMode = settingsBox.get('darkMode', defaultValue: false);
+  // final coursesBox = await Hive.openBox<Course>('courses');
+
+  Hive.registerAdapter(CourseAdapter());
+  Hive.registerAdapter(EventAdapter());
+  Hive.registerAdapter(TimeBookingAdapter());
+
+  await Hive.openBox<Course>('courses');
+  await Hive.openBox<Event>('events');
+  await Hive.openBox<TimeBooking>('timeBookings');
+
+
   await AwesomeNotifications().initialize(
     null,  // for notification icon if a special one is needed
     [

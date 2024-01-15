@@ -1,11 +1,22 @@
 
+import 'package:hive/hive.dart';
 import 'package:studymate/entity/time_booking.dart';
 import 'event.dart';
+part 'course.g.dart';
 
-class Course {
+@HiveType(typeId: 0)
+class Course extends HiveObject{
+
+  @HiveField(0)
   String id;
+
+  @HiveField(1)
   String courseName;
+
+  @HiveField(2)
   List<Event> events;
+
+  @HiveField(3)
   List<TimeBooking> timeBookings;
 
   Course({

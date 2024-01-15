@@ -1,8 +1,22 @@
-class TimeBooking {
+import 'package:hive/hive.dart';
+part 'time_booking.g.dart';
+
+@HiveType(typeId: 2)
+class TimeBooking extends HiveObject {
+
+  @HiveField(0)
   int id;
+
+  @HiveField(1)
   String? comment;
+
+  @HiveField(2)
   DateTime startDateTime;
+
+  @HiveField(3)
   DateTime endDateTime;
+
+  @HiveField(4)
   String courseId;
 
   TimeBooking({
