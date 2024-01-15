@@ -54,7 +54,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _navigateToEventDetailScreen(null),
         icon: const Icon(Icons.add),
-        label: const Text('Event hinzufügen'),
+        label: const Text('Prüfung/Abgabe hinzufügen'),
       ),
     );
   }
@@ -72,7 +72,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Kurs löschen'),
-        content: const Text('Bist du sicher, dass du diesen Kurs löschen möchtest? Alle Events und Zeitbuchungen auf diesem Kurs werden gelöscht.'),
+        content: const Text('Bist du sicher, dass du diesen Kurs löschen möchtest? Alle Prüfungen, Abgaben und Zeitbuchungen auf diesem Kurs werden gelöscht.'),
         actions: [
           TextButton(
             child: const Text('Abbrechen'),
@@ -151,7 +151,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
         if (widget.course.events.isEmpty) {
           return const EmptyStateWidget(
             iconData: Icons.event_note,
-            message: 'Keine Prüfungen oder Abgabetermine.\nTippen Sie auf das Plus-Icon, um einen neuen Event hinzuzufügen.',
+            message: 'Keine Prüfungen oder Abgabetermine.\nTippen Sie auf das Plus-Icon, um eine neue Prüfung oder Abgabe hinzuzufügen.',
           );
         } else {
           return EventListWidget(course: widget.course);

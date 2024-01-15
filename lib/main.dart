@@ -1,7 +1,10 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:studymate/providers/course_provider.dart';
@@ -34,6 +37,8 @@ void main() async {
   await Hive.openBox<Event>('events');
   await Hive.openBox<TimeBooking>('timeBookings');
 
+  Intl.defaultLocale = 'de_DE';
+  initializeDateFormatting('de_DE', null);
 
   await AwesomeNotifications().initialize(
     null,  // for notification icon if a special one is needed
@@ -97,6 +102,14 @@ class _MyAppState extends State<MyApp> {
       themeMode: themeProvider.isDarkMode ? ThemeMode.dark : ThemeMode.light,
       darkTheme: darkMode,
       theme: lightMode,
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('de', 'DE'),
+      ],
       home: BottomNavigation(),
     );
   }

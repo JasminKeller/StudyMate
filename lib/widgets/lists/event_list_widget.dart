@@ -92,7 +92,7 @@ class _EventListWidgetState extends State<EventListWidget> {
         }
         final event = widget.course.events[index];
         final formattedDate = event.eventDateTime != null
-            ? DateFormat('d. MMMM').format(event.eventDateTime!)
+            ? DateFormat('EEEE, d. MMMM yyyy', 'de_DE').format(event.eventDateTime!)
             : '';
 
         IconData reminderIcon = Icons.notifications_off;

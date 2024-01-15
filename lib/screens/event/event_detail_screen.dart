@@ -43,11 +43,11 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
         TextEditingController(text: widget.event?.eventName ?? '');
     eventDateController = TextEditingController(
         text: widget.event?.eventDateTime != null
-            ? DateFormat('d. MMMM y').format(widget.event!.eventDateTime!)
+            ? DateFormat('d. MMMM y', 'de_DE').format(widget.event!.eventDateTime!)
             : '');
     reminderDateController = TextEditingController(
         text: widget.event?.reminderDateTime != null
-            ? DateFormat('d. MMMM y, HH:mm').format(widget.event!.reminderDateTime!)
+            ? DateFormat('d. MMMM y, HH:mm', 'de_DE').format(widget.event!.reminderDateTime!)
             : '');
     eventNameFocusNode = FocusNode();
 
@@ -75,7 +75,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
     if (pickedDate != null) {
       setState(() {
         eventDate = pickedDate;
-        eventDateController.text = DateFormat('d. MMMM y').format(pickedDate);
+        eventDateController.text = DateFormat('d. MMMM y', 'de_DE').format(pickedDate);
         if (_attemptedSubmit) {
           _formKey.currentState?.validate();
         }
@@ -108,7 +108,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
             pickedTime.minute,
           );
 
-          reminderDateController.text = DateFormat('d. MMMM y, HH:mm').format(reminderDateTime!);
+          reminderDateController.text = DateFormat('d. MMMM y, HH:mm', 'de_DE').format(reminderDateTime!);
           isReminderActive = true;
         });
 
@@ -198,9 +198,9 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
       context: context,
       builder: (context) =>
           AlertDialog(
-            title: const Text('Event löschen'),
+            title: const Text('Prüfung/Abgabe löschen?'),
             content: const Text(
-                'Bist du sicher, dass du dieses Event löschen möchtest?'),
+                'Bist du sicher, dass du diese Prüfung/Abgabe löschen möchtest?'),
             actions: [
               TextButton(
                 child: const Text('Abbrechen'),
@@ -227,7 +227,8 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.event == null ? 'Neues Event' : 'Event bearbeiten'),
+        title: Text(widget.event == null ? 'Neue Prüfung/Abgabe erstellen' : 'Prüfung/Abgabe bearbeiten',
+          style: const TextStyle(fontSize: 24),),
         actions: [
           if (widget.event != null) IconButton(
             icon: const Icon(Icons.delete),
@@ -244,7 +245,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
               TextFormField(
                 controller: eventNameController,
                 focusNode: eventNameFocusNode,
-                decoration: const InputDecoration(labelText: 'Event Name'),
+                decoration: const InputDecoration(labelText: 'Prüfung-/Abgabename'),
                 onChanged: (value) {
                   if (_attemptedSubmit) {
                     _formKey.currentState?.validate();
@@ -252,7 +253,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                 },
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Event Name darf nicht leer sein.';
+                    return 'Prüfung-/Abgabename darf nicht leer sein.';
                   }
                   return null;
                 },
@@ -305,7 +306,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: _saveEvent,
-                child: Text(widget.event == null ? 'Event hinzufügen' : 'Event aktualisieren'),
+                child: Text(widget.event == null ? 'Prüfung/Abgabe hinzufügen' : 'Prüfung/Abgabe aktualisieren'),
               ),
             ],
           ),
