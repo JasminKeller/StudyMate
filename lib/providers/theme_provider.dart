@@ -19,11 +19,6 @@ class ThemeProvider with ChangeNotifier {
     _darkMode = !_darkMode;
     notifyListeners();
     Hive.box('settings').put('darkMode', _darkMode);
-    if (kDebugMode) {
-      print('Dark Mode Value: $_darkMode');
-      print('Dark Mode Hive Box: ${Hive.box('settings').get('darkMode')}');
-    }
-
   }
 }
 

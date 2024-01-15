@@ -13,8 +13,6 @@ import 'package:studymate/services/notification_controller.dart';
 import 'package:studymate/theme/theme.dart';
 
 
-const darkModeBox = 'darkMode';
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); // Stellt sicher, dass die Flutter-Bindungen initialisiert sind.
 
@@ -23,10 +21,6 @@ void main() async {
   Hive.init(appDocumentDir.path);
   var settingsBox = await Hive.openBox('settings');
   bool darkMode = settingsBox.get('darkMode', defaultValue: false);
-  if (kDebugMode) {
-    print('DarkMode: $darkMode');
-  }
-
   await AwesomeNotifications().initialize(
     null,  // for notification icon if a special one is needed
     [

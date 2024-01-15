@@ -68,7 +68,7 @@ class NotificationHelper {
 
     // Fügt einen Tag hinzu, wenn die geplante Zeit vor der aktuellen Zeit liegt
     if (scheduleAlarmDateTime.isBefore(now)) {
-      scheduleAlarmDateTime = scheduleAlarmDateTime.add(Duration(days: 1));
+      scheduleAlarmDateTime = scheduleAlarmDateTime.add(const Duration(days: 1));
     }
 
     await _checkPermissionsAndCreateNotification(
@@ -78,6 +78,10 @@ class NotificationHelper {
       body: 'Es ist Zeit für Ihre tägliche Erinnerung!',
       scheduleDateTime: scheduleAlarmDateTime,
     );
+
+    if (kDebugMode) {
+      print('Tägliche Erinnerung geplant für ${DateFormat('dd.MM.yyyy HH:mm').format(scheduleAlarmDateTime)}.');
+    }
   }
 
   // Single Notification
