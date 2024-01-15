@@ -56,7 +56,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
    void _sendTestNotification() {
     AwesomeNotifications().createNotification(
       content: NotificationContent(
-        id: 1,
+        id: 999999,
         channelKey: 'basic_channel',
         title: 'Test Notification',
         body: 'This is a test notification',

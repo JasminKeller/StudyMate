@@ -57,30 +57,49 @@ class NotificationHelper {
   // Daily Notification
   static Future<void> checkPermissionsAndScheduleDailyNotification(
       TimeOfDay selectedTime, BuildContext context) async {
-    DateTime now = DateTime.now();
-    DateTime scheduleAlarmDateTime = DateTime(
-      now.year,
-      now.month,
-      now.day,
-      selectedTime.hour,
-      selectedTime.minute,
-    );
+    if (await Permission.notification.request().isGranted) {
+      scheduleDailyReminderNotification(selectedTime);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+              'Berechtigung für Benachrichtigungen wurde verweigert.'),
+        ),
+      );
+    }
+  }
 
-    // Fügt einen Tag hinzu, wenn die geplante Zeit vor der aktuellen Zeit liegt
-    if (scheduleAlarmDateTime.isBefore(now)) {
-      scheduleAlarmDateTime = scheduleAlarmDateTime.add(const Duration(days: 1));
+  // Daily Notification
+  static void scheduleDailyReminderNotification(TimeOfDay selectedTime) {
+    DateTime now = DateTime.now();
+    DateTime firstInstance = DateTime(now.year, now.month, now.day, selectedTime.hour, selectedTime.minute);
+
+    // Wenn die erste Instanz in der Vergangenheit liegt, fangen Sie morgen an.
+    if (firstInstance.isBefore(now)) {
+      firstInstance = firstInstance.add(const Duration(days: 1));
     }
 
-    await _checkPermissionsAndCreateNotification(
-      context: context,
-      id: 111111,
-      title: 'Geplante Erinnerung',
-      body: 'Es ist Zeit für Ihre tägliche Erinnerung!',
-      scheduleDateTime: scheduleAlarmDateTime,
+    AwesomeNotifications().createNotification(
+      content: NotificationContent(
+        id: 111111,
+        channelKey: 'basic_channel',
+        title: 'Tägliche Erinnerung',
+        body: 'Es ist Zeit für Ihre tägliche Erinnerung!',
+      ),
+      schedule: NotificationCalendar(
+        year: firstInstance.year,
+        month: firstInstance.month,
+        day: firstInstance.day,
+        hour: firstInstance.hour,
+        minute: firstInstance.minute,
+        second: 0,
+        millisecond: 0,
+        repeats: true,
+      ),
     );
 
     if (kDebugMode) {
-      print('Tägliche Erinnerung geplant für ${DateFormat('dd.MM.yyyy HH:mm').format(scheduleAlarmDateTime)}.');
+      print('Tägliche Erinnerung geplant für ${DateFormat('dd.MM.yyyy HH:mm').format(firstInstance)}.');
     }
   }
 
