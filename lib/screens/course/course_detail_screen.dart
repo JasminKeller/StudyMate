@@ -71,8 +71,11 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
     bool confirm = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Kurs löschen'),
-        content: const Text('Bist du sicher, dass du diesen Kurs löschen möchtest? Alle Prüfungen, Abgaben und Zeitbuchungen auf diesem Kurs werden gelöscht.'),
+        title: const Text('Kurs löschen?'),
+        content: Text(
+            'Bist du sicher, dass du den Kurs "${widget.course.courseName}" löschen möchtest?\n\n'
+                'Alle Prüfungen/Abgaben und Zeitbuchungen auf diesem Kurs werden gelöscht.'
+        ),
         actions: [
           TextButton(
             child: const Text('Abbrechen'),
@@ -87,7 +90,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
     ) ?? false;
 
     if (confirm) {
-      _deleteCourseAndEvents(widget.course.id);
+      await _deleteCourseAndEvents(widget.course.id);
       CourseProvider courseProvider = context.read<CourseProvider>();
       courseProvider.readCourses();
 

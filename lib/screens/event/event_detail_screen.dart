@@ -198,9 +198,13 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
       context: context,
       builder: (context) =>
           AlertDialog(
-            title: const Text('Prüfung/Abgabe löschen?'),
-            content: const Text(
-                'Bist du sicher, dass du diese Prüfung/Abgabe löschen möchtest?'),
+            title: const Text(
+              'Prüfung/Abgabe löschen?',
+              style: TextStyle(fontSize: 20),
+            ),
+            content: Text(
+                'Bist du sicher, dass du die Prüfung/Abgabe "${widget.event!.eventName}" löschen möchtest?'
+            ),
             actions: [
               TextButton(
                 child: const Text('Abbrechen'),
