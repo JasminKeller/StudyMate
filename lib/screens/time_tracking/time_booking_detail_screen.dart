@@ -34,7 +34,13 @@ class _TimeBookingDetailScreenState extends State<TimeBookingDetailScreen> {
     selectedStartTime = widget.booking?.startDateTime;
     selectedEndTime = widget.booking?.endDateTime;
 
-    commentController = TextEditingController(text: widget.booking?.comment);
+    // überprüfen ob zuvor "Kein Kommentar" drin stand wenn ja dann leeren String setzen
+    String initialComment = widget.booking?.comment ?? '';
+    if (initialComment == 'Kein Kommentar') {
+      initialComment = '';
+    }
+
+    commentController = TextEditingController(text: initialComment);
     startTimeController = TextEditingController(
         text: widget.booking?.startDateTime != null
             ? DateFormat('dd.MM.yyyy, HH:mm').format(widget.booking!.startDateTime!)
@@ -155,14 +161,23 @@ class _TimeBookingDetailScreenState extends State<TimeBookingDetailScreen> {
             children: <Widget>[
               const SizedBox( height: 20),
               DropdownButtonFormField<String>(
-                decoration: const InputDecoration(labelText: 'Kurs auswählen'),
+                decoration: const InputDecoration(
+                  labelText: 'Kurs auswählen',
+                  contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                ),
                 value: selectedCourseId,
                 items: Provider.of<CourseProvider>(context, listen: false)
                     .courses
                     .map((course) {
                   return DropdownMenuItem<String>(
                     value: course.id,
-                    child: Text(course.courseName),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: Text(
+                        course.courseName,
+                        style: const TextStyle(fontSize: 16),
+                      ),
+                    ),
                   );
                 }).toList(),
                 onChanged: (value) {
@@ -220,15 +235,26 @@ class _TimeBookingDetailScreenState extends State<TimeBookingDetailScreen> {
                   prefixIcon: Icon(Icons.comment),
                 ),
               ),
-              const SizedBox( height: 30),
-              ElevatedButton(
-                onPressed: _saveTimeBooking,
-                child: Text(buttonTitle),
-              ),
             ],
           ),
         ),
       ),
+      bottomNavigationBar: Padding(
+        padding: EdgeInsets.only(
+          left: 20.0,
+          right: 20.0,
+          bottom: MediaQuery.of(context).viewInsets.bottom + 20.0,
+        ),
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            minimumSize: const Size(double.infinity, 50),
+            padding: const EdgeInsets.symmetric(vertical: 15),
+          ),
+          onPressed: _saveTimeBooking,
+          child: Text(buttonTitle),
+        ),
+      ),
+
     );
   }
 }
