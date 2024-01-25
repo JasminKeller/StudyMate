@@ -136,8 +136,10 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
     });
     if (_formKey.currentState?.validate() == true) {
       String eventName = eventNameController.text;
-
       isReminderActive = reminderDateTime != null && reminderDateTime!.isAfter(DateTime.now());
+
+      // Überprüfe, ob sich der Erinnerungsstatus geändert hat
+      bool isReminderChanged = (widget.event?.isReminderActive ?? false) != isReminderActive;
 
       if (widget.event == null) {
         // Neues Event erstellen und hinzufügen
@@ -148,7 +150,6 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
           reminderDateTime,
           isReminderActive,
         );
-        print('newEventId: $newEventId');
         if (isReminderActive) {
           await NotificationHelper.checkPermissionsAndScheduleSingleNotification(
             notificationId: newEventId,
@@ -156,21 +157,16 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
             context: context,
             title: eventName,
           );
-          snackbarService.showReminderUpdatedSnackbar(context, true);
         }
-
-
       } else {
         // Bestehendes Event aktualisieren
-        bool wasReminderUpdated = isReminderActive != widget.event!.isReminderActive;
         widget.event!.eventName = eventName;
         widget.event!.eventDateTime = eventDate!;
         widget.event!.reminderDateTime = reminderDateTime;
         widget.event!.isReminderActive = isReminderActive;
 
-        await CourseRepository.instance.updateEventFromCourse(
-            widget.courseID, widget.event!);
-        if (wasReminderUpdated) {
+        await CourseRepository.instance.updateEventFromCourse(widget.courseID, widget.event!);
+        if (isReminderChanged) {
           if (isReminderActive) {
             await NotificationHelper.checkPermissionsAndScheduleSingleNotification(
               notificationId: widget.event!.id,
@@ -178,11 +174,15 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
               context: context,
               title: eventName,
             );
-            snackbarService.showReminderUpdatedSnackbar(context, true);
           } else {
             AwesomeNotifications().cancel(widget.event!.id!);
           }
         }
+      }
+
+      // Zeige die Snackbar nur an, wenn sich der Erinnerungsstatus geändert hat
+      if (isReminderChanged) {
+        snackbarService.showReminderUpdatedSnackbar(context, isReminderActive);
       }
 
       CourseProvider courseProvider = context.read<CourseProvider>();
@@ -190,7 +190,6 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
       Navigator.of(context).pop();
     }
   }
-
 
 
   void _confirmDeleteEvent() async {
@@ -285,10 +284,6 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                       ? IconButton(
                     icon: const Icon(Icons.clear),
                     onPressed: () {
-                      if (isReminderActive) {
-                        snackbarService.showReminderUpdatedSnackbar(context, false);
-                        AwesomeNotifications().cancel(widget.event!.id!);
-                      }
                       setState(() {
                         reminderDateTime = null;
                         reminderDateController.clear();
@@ -308,12 +303,23 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                 },
               ),
               const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _saveEvent,
-                child: Text(widget.event == null ? 'Prüfung/Abgabe hinzufügen' : 'Prüfung/Abgabe aktualisieren'),
-              ),
             ],
           ),
+        ),
+      ),
+      bottomNavigationBar: Padding(
+        padding: EdgeInsets.only(
+          left: 20.0,
+          right: 20.0,
+          bottom: MediaQuery.of(context).viewInsets.bottom + 20.0,
+        ),
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            minimumSize: const Size(double.infinity, 50),
+            padding: const EdgeInsets.symmetric(vertical: 15),
+          ),
+          onPressed: _saveEvent,
+          child: Text(widget.event == null ? 'Prüfung/Abgabe hinzufügen' : 'Prüfung/Abgabe aktualisieren'),
         ),
       ),
     );

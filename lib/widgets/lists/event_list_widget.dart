@@ -24,61 +24,6 @@ class EventListWidget extends StatefulWidget {
 class _EventListWidgetState extends State<EventListWidget> {
   SnackbarService snackbarService = SnackbarService();
 
-  void _toggleReminder(BuildContext context, Event event) async {
-    if (event.isReminderActive) {
-      event.isReminderActive = false;
-      event.reminderDateTime = null;
-      AwesomeNotifications().cancel(event.id!);
-      snackbarService.showReminderUpdatedSnackbar(context, false);
-      if (kDebugMode) {
-        print('cancel notification with id ${event.id}');
-      }
-    } else {
-      // Show date and time picker if the reminder is inactive
-      final DateTime? pickedDate = await showDatePicker(
-        context: context,
-        initialDate: event.reminderDateTime ?? DateTime.now(),
-        firstDate: DateTime(2000),
-        lastDate: DateTime(2101),
-      );
-
-      if (pickedDate != null) {
-        final TimeOfDay? pickedTime = await showTimePicker(
-          context: context,
-          initialTime: TimeOfDay.fromDateTime(event.reminderDateTime ?? DateTime.now()),
-        );
-
-        if (pickedTime != null) {
-          DateTime finalDateTime = DateTime(
-            pickedDate.year,
-            pickedDate.month,
-            pickedDate.day,
-            pickedTime.hour,
-            pickedTime.minute,
-          );
-
-          event.reminderDateTime = finalDateTime;
-          event.isReminderActive = true;
-
-          await NotificationHelper.checkPermissionsAndScheduleSingleNotification(
-            notificationId: event.id,
-            dateTime: finalDateTime,
-            context: context,
-            title: event.eventName,
-          );
-
-          snackbarService.showReminderUpdatedSnackbar(context, true);
-        }
-      }
-    }
-
-    await CourseRepository.instance.updateEventFromCourse(widget.course.id, event);
-    CourseProvider courseProvider = context.read<CourseProvider>();
-    courseProvider.readCourses();
-
-    setState(() {});
-  }
-
   @override
   Widget build(BuildContext context) {
     CourseProvider courseProvider = context.watch<CourseProvider>();
@@ -118,10 +63,6 @@ class _EventListWidgetState extends State<EventListWidget> {
               child: ListTile(
                 title: Text(event.eventName),
                 subtitle: Text(formattedDate, style: const TextStyle(fontSize: 12)),
-                trailing: IconButton(
-                  icon: Icon(reminderIcon, color: iconColor),
-                  onPressed: () => _toggleReminder(context, event),
-                ),
               ),
             ),
           ),
