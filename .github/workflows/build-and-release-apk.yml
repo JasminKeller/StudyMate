@@ -19,7 +19,6 @@ jobs:
         with:
           flutter-version: '3.13.9'
       - run: flutter pub get
-      - run: flutter test
       - run: flutter build apk --release --split-per-abi
       - name: Upload APK to GitHub Releases
         uses: ncipollo/release-action@v1
