@@ -13,9 +13,10 @@ Um dieses Projekt im Entwicklungsmodus auf einem Android-Gerät zu starten, folg
 ## Architektur und State-Management
 
 Die Struktur dieses Projekts folgt keinem expliziten Architektur-Pattern, sondern adaptiert Prinzipien, die meiner Arbeitsweise am besten entsprechen. Dennoch ähnelt die verwendete Struktur dem MVVM-Muster:
+
+- `Screens` als Views für die Darstellung der Benutzeroberfläche.
 - `Providers` als ViewModels, die das State-Management übernehmen bzw. die UI mit der Business Logik verbinden.
 - `Services` als Model, welche die Geschäftslogik enthält.
-- `Screens` als Views für die Darstellung der Benutzeroberfläche.
 
 
 Die Architektur der App ist in verschiedene Verzeichnisse aufgeteilt:
@@ -27,6 +28,9 @@ Die Architektur der App ist in verschiedene Verzeichnisse aufgeteilt:
 - `theme`: Enthält die themenbezogene Konfiguration und Styling-Informationen.
 - `utils`: Hilfsklassen und Funktionen.
 - `widgets`: Wiederverwendbare Widget-Komponenten, die in den Bildschirmen verwendet werden.
+
+## Architecture Pattern Diagram
+![Architecture Pattern Diagram ](readme_images/architecture_diagram.png)
 
 
 ## Vertiefungsthema "Store Releases"

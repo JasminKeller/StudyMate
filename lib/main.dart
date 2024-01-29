@@ -9,7 +9,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:studymate/providers/course_provider.dart';
 import 'package:studymate/providers/theme_provider.dart';
-import 'package:studymate/screens/course/course_management_screen.dart';
+import 'package:studymate/screens/course/course_home_screen.dart';
 import 'package:studymate/screens/time_tracking/time_tracking_screen.dart';
 import 'package:studymate/services/notification_controller.dart';
 import 'package:studymate/theme/theme.dart';
