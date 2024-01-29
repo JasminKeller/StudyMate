@@ -37,7 +37,7 @@ Die Architektur der App ist in verschiedene Verzeichnisse aufgeteilt:
 
 Als Vertiefungsthema wurde das Thema "Store Releases" gewählt. Dabei wurde versucht, die App im Google Play Store zu veröffentlichen. 
 
-Unter folgendem [Link](https://jake-knowledge.notion.site/Store-Releases-1c57569a2c564be9b6cf3ea83cc26376) (tbd) habe ich die Einzelheiten dokumentiert, für diejenigen, die daran interessiert sind.
+Unter folgendem [Link](https://jake-knowledge.notion.site/Store-Releases-1c57569a2c564be9b6cf3ea83cc26376) habe ich die Einzelheiten dokumentiert, für diejenigen, die daran interessiert sind.
 
 Bitte sei dir folgender Punkte schon vorab bewusst: 
 
