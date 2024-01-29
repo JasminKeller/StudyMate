@@ -16,6 +16,12 @@ class CourseProvider extends ChangeNotifier {
     readCourseWithLoadingState();
   }
 
+  void addCourse(Course course) {
+    _courses.add(course);
+    notifyListeners();
+  }
+
+
   Future<void> readCourseWithLoadingState() async {
     isLoading = true;
     notifyListeners();

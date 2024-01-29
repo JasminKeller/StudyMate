@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/course_provider.dart';
 import '../../services/course_repository.dart';
+import '../../widgets/add_course_modal.dart';
 import '../../widgets/lists/course_list_widget.dart';
 import '../../widgets/empty_state_widget.dart';
 import '../settings_screen.dart';
@@ -22,53 +23,8 @@ class _CourseManagementScreenState extends State<CourseManagementScreen> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      builder: (BuildContext context) {
-        String newCourse = '';
-        var textEditingController = TextEditingController();
-        return DraggableScrollableSheet(
-          initialChildSize: 0.55,
-          expand: false,
-          builder: (_, controller) => Container(
-            padding: const EdgeInsets.all(16),
-            child: SingleChildScrollView(
-              controller: controller,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  TextField(
-                    autofocus: true,
-                    controller: textEditingController,
-                    onChanged: (value) {
-                      newCourse = value;
-                    },
-                    decoration: const InputDecoration(labelText: 'Neuer Kurs hinzufügen'),
-                    onEditingComplete: () {
-                      _addCourse(newCourse);
-                    },
-                  ),
-                  const SizedBox(height: 30),
-                  ElevatedButton(
-                    child: const Text('Hinzufügen'),
-                    onPressed: () {
-                      _addCourse(newCourse);
-                    },
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
+      builder: (_) => const AddCourseModal(),
     );
-  }
-
-  void _addCourse(String newCourseName) async {
-    if (newCourseName.isNotEmpty) {
-      await CourseRepository.instance.addCourse(courseName: newCourseName);
-      var courseProvider = context.read<CourseProvider>();
-      courseProvider.readCourses();
-      Navigator.of(context).pop();
-    }
   }
 
   Widget _buildCourseContent() {
@@ -89,6 +45,7 @@ class _CourseManagementScreenState extends State<CourseManagementScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -98,7 +55,7 @@ class _CourseManagementScreenState extends State<CourseManagementScreen> {
             icon: const Icon(Icons.settings),
             onPressed: () {
               Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => SettingsScreen(),
+                builder: (context) => const SettingsScreen(),
               ));
             },
           ),
@@ -113,6 +70,7 @@ class _CourseManagementScreenState extends State<CourseManagementScreen> {
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
+        heroTag: 'addCourse_btn',
         onPressed: _showAddCourseModalBottomSheet,
         icon: const Icon(Icons.add),
         label: const Text('Kurs hinzufügen'),

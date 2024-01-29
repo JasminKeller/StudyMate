@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:hive/hive.dart';
+import 'package:studymate/providers/course_provider.dart';
 
 import '../entity/course.dart';
 import '../entity/event.dart';
@@ -28,17 +29,28 @@ class CourseRepository {
     // return _courses;
   }
 
+  /* without provider
   Future<void> addCourse({
     required String courseName,
   }) async {
     var courseId = DateTime.now().millisecondsSinceEpoch.toString();
-    //_courses.add(Course(id: courseId, courseName: courseName));
     var newCourse = Course(id: courseId, courseName: courseName);
     await coursesBox.put(newCourse.id, newCourse);
   }
+   */
+
+  // with Provider
+  Future<void> addCourse(CourseProvider courseProvider, {
+    required String courseName,
+  }) async {
+    var courseId = DateTime.now().millisecondsSinceEpoch.toString();
+    var newCourse = Course(id: courseId, courseName: courseName);
+    await coursesBox.put(newCourse.id, newCourse);
+    await courseProvider.readCourseWithLoadingState();
+  }
+
 
   Future<void> deleteCourse(String courseId) async {
-    // _courses.removeWhere((course) => course.id == courseId);
     await coursesBox.delete(courseId);
   }
 
