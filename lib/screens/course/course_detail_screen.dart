@@ -54,9 +54,8 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
     ) ?? false;
 
     if (confirm) {
-      await _deleteCourseAndEvents(widget.course.id);
-      CourseProvider courseProvider = context.read<CourseProvider>();
-      courseProvider.readCourses();
+      var courseProvider = Provider.of<CourseProvider>(context, listen: false);
+      await courseProvider.deleteCourse(widget.course.id);
 
       Navigator.of(context).pop();
     }
