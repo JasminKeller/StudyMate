@@ -84,8 +84,10 @@ class _TimeBookingListWidgetState extends State<TimeBookingListWidget> {
   }
 
   Future<void> _deleteBooking(Course course, TimeBooking booking) async {
-    await CourseService.instance.deleteTimeBookingFromCourse(course.id, booking.id);
-    await Provider.of<CourseProvider>(context, listen: false).readCourse(course.id);
+    // Instanz des EventProviders
+    CourseProvider courseProvider = Provider.of<CourseProvider>(context, listen: false);
+    await courseProvider.deleteTimeBookingFromCourse(course.id, booking.id);
+
   }
 
   String _calculateTotalDuration(List<TimeBooking> timeBookings) {

@@ -32,30 +32,30 @@ class CourseProvider extends ChangeNotifier {
 
   Future<void> addCourse({required String courseName}) async {
     await _courseService.addCourse(courseName: courseName);
-    loadCourses();
+    readCourseWithLoadingState();
   }
 
 
   Future<void> deleteCourse(String courseId) async {
     await _courseService.deleteCourse(courseId);
-    loadCourses();
+    readCourseWithLoadingState();
   }
 
   Future<void> updateCourse(String courseId, String courseName) async {
     await _courseService.updateCourse(courseId: courseId, courseName: courseName);
-    loadCourses();
+    readCourseWithLoadingState();
   }
 
   Future<Course>? getCourseById(String courseId) async {
     Course course  = await _courseService.getCourseById(courseId);
-    notifyListeners();
+    readCourseWithLoadingState();
     return course ;
   }
 
   Future<List<Event>> getEventsByCourseId(String courseId) async {
     try {
       final List<Event> events = await _courseService.getEventsByCourseId(courseId);
-      notifyListeners();
+      readCourseWithLoadingState();
       return events;
     } catch (e) {
       // TODO: Error handling
@@ -78,7 +78,7 @@ class CourseProvider extends ChangeNotifier {
         reminderDateTime,
         isReminderActive,
       );
-      notifyListeners();
+      readCourseWithLoadingState();
       return newEventId;
     } catch (e) {
       // TODO: Error handling
@@ -89,7 +89,7 @@ class CourseProvider extends ChangeNotifier {
   Future<void> deleteEventFromCourse(String courseId, int eventId) async {
     try {
       await _courseService.deleteEventFromCourse(courseId, eventId);
-      notifyListeners();
+      readCourseWithLoadingState();
     } catch (e) {
       // TODO: Error handling
     }
@@ -98,7 +98,7 @@ class CourseProvider extends ChangeNotifier {
   Future<void> updateEventFromCourse(String courseId, Event event) async {
     try {
       await _courseService.updateEventFromCourse(courseId, event);
-      notifyListeners();
+      readCourseWithLoadingState();
     } catch (e) {
       // TODO: Error handling
     }
@@ -120,7 +120,7 @@ class CourseProvider extends ChangeNotifier {
         endDateTime: endDateTime,
         comment: comment,
       );
-      loadCourses();
+      readCourseWithLoadingState();
     } catch (e) {
       // TODO: Error handling
     }
@@ -129,7 +129,7 @@ class CourseProvider extends ChangeNotifier {
   Future<void> deleteTimeBookingFromCourse(String courseId, int timeBookingId) async {
     try {
       await _courseService.deleteTimeBookingFromCourse(courseId, timeBookingId);
-      loadCourses();
+      readCourseWithLoadingState();
     } catch (e) {
       // TODO: Error handling
     }
@@ -150,18 +150,14 @@ class CourseProvider extends ChangeNotifier {
         endDateTime: endDateTime,
         comment: comment,
       );
-      loadCourses();
+      readCourseWithLoadingState();
     } catch (e) {
       // TODO: Error handling
     }
   }
 
 
-
-
-  // Old Methods
-
-
+  // Old Methods with loading state
   Future<void> readCourseWithLoadingState() async {
     isLoading = true;
     notifyListeners();
