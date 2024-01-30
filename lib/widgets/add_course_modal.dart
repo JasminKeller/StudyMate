@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/course_provider.dart';
-import '../services/course_service.dart';
 
 class AddCourseModal extends StatelessWidget {
   const AddCourseModal({Key? key}) : super(key: key);

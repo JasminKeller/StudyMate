@@ -8,7 +8,6 @@ import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:studymate/providers/course_provider.dart';
-import 'package:studymate/providers/event_provider.dart';
 import 'package:studymate/providers/theme_provider.dart';
 import 'package:studymate/screens/course/course_home_screen.dart';
 import 'package:studymate/screens/time_tracking/time_booking_home_screen.dart';
@@ -68,7 +67,6 @@ void main() async {
       providers: [
         ChangeNotifierProvider(create: (context) => ThemeProvider(darkMode)),
         ChangeNotifierProvider(create: (context) => CourseProvider()),
-        ChangeNotifierProvider(create: (context) => EventProvider()),
       ],
       child: const MyApp(),
     ),

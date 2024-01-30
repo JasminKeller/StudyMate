@@ -96,7 +96,6 @@ class CourseService {
   }
 
   Future<void> deleteEventFromCourse(String courseId, int eventId) async {
-    // var course = _courses.firstWhere((c) => c.id == courseId);
     var course = await getCourseById(courseId);
     course.events.removeWhere((event) => event.id == eventId);
     await _coursesBox.put(courseId, course);

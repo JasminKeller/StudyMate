@@ -1,8 +1,8 @@
 
-
 import 'dart:collection';
 
 import 'package:flutter/cupertino.dart';
+import 'package:studymate/entity/event.dart';
 
 import '../entity/course.dart';
 import '../services/course_service.dart';
@@ -19,6 +19,7 @@ class CourseProvider extends ChangeNotifier {
   List<Course> _courses = [];
 
   UnmodifiableListView<Course> get courses => UnmodifiableListView(_courses);
+
 
   CourseProvider() {
     loadCourses();
@@ -49,6 +50,58 @@ class CourseProvider extends ChangeNotifier {
     Course course  = await _courseService.getCourseById(courseId);
     notifyListeners();
     return course ;
+  }
+
+  Future<List<Event>> getEventsByCourseId(String courseId) async {
+    try {
+      final List<Event> events = await _courseService.getEventsByCourseId(courseId);
+      notifyListeners();
+      return events;
+    } catch (e) {
+      // TODO: Error handling
+      return [];
+    }
+  }
+
+  Future<int> addEventToCourse(
+      String courseId,
+      String eventName,
+      DateTime eventDateTime,
+      DateTime? reminderDateTime,
+      bool isReminderActive,
+      ) async {
+    try {
+      final newEventId = await _courseService.addEventToCourse(
+        courseId,
+        eventName,
+        eventDateTime,
+        reminderDateTime,
+        isReminderActive,
+      );
+      notifyListeners();
+      return newEventId;
+    } catch (e) {
+      // TODO: Error handling
+      return -1;
+    }
+  }
+
+  Future<void> deleteEventFromCourse(String courseId, int eventId) async {
+    try {
+      await _courseService.deleteEventFromCourse(courseId, eventId);
+      notifyListeners();
+    } catch (e) {
+      // TODO: Error handling
+    }
+  }
+
+  Future<void> updateEventFromCourse(String courseId, Event event) async {
+    try {
+      await _courseService.updateEventFromCourse(courseId, event);
+      notifyListeners();
+    } catch (e) {
+      // TODO: Error handling
+    }
   }
 
 

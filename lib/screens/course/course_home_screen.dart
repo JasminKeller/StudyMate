@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/course_provider.dart';
-import '../../services/course_service.dart';
 import '../../widgets/add_course_modal.dart';
 import '../../widgets/lists/course_list_widget.dart';
 import '../../widgets/empty_state_widget.dart';

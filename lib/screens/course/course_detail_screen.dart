@@ -153,7 +153,18 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
         children: [
           const SizedBox(height: 20),
           Expanded(
-            child: _buildEventContent(),
+            child: Consumer<CourseProvider>(
+              builder: (context, courseProvider, child) {
+                if (courseProvider.courses.isEmpty) {
+                  return const EmptyStateWidget(
+                    iconData: Icons.event_note,
+                    message: 'Keine Prüfungen oder Abgabetermine.\nTippen Sie auf das Plus-Icon, um eine neue Prüfung oder Abgabe hinzuzufügen.',
+                  );
+                } else {
+                  return EventListWidget(course: widget.course);
+                }
+              },
+            ),
           ),
         ],
       ),
@@ -164,6 +175,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
       ),
     );
   }
+
 
 
 }
