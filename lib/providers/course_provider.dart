@@ -105,6 +105,60 @@ class CourseProvider extends ChangeNotifier {
   }
 
 
+  // TimeBooking Methoden
+
+  Future<void> addTimeBookingToCourse({
+    required String courseId,
+    required DateTime startDateTime,
+    required DateTime endDateTime,
+    String? comment,
+  }) async {
+    try {
+      await _courseService.addTimeBookingToCourse(
+        courseId: courseId,
+        startDateTime: startDateTime,
+        endDateTime: endDateTime,
+        comment: comment,
+      );
+      loadCourses();
+    } catch (e) {
+      // TODO: Error handling
+    }
+  }
+
+  Future<void> deleteTimeBookingFromCourse(String courseId, int timeBookingId) async {
+    try {
+      await _courseService.deleteTimeBookingFromCourse(courseId, timeBookingId);
+      loadCourses();
+    } catch (e) {
+      // TODO: Error handling
+    }
+  }
+
+  Future<void> updateTimeBookingInCourse({
+    required int timeBookingId,
+    required String courseId,
+    required DateTime startDateTime,
+    required DateTime endDateTime,
+    String? comment,
+  }) async {
+    try {
+      await _courseService.updateTimeBookingInCourse(
+        timeBookingId: timeBookingId,
+        courseId: courseId,
+        startDateTime: startDateTime,
+        endDateTime: endDateTime,
+        comment: comment,
+      );
+      loadCourses();
+    } catch (e) {
+      // TODO: Error handling
+    }
+  }
+
+
+
+
   // Old Methods
 
 

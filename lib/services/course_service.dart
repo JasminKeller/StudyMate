@@ -102,7 +102,6 @@ class CourseService {
   }
 
   Future<void> updateEventFromCourse(String courseId, Event event) async {
-    // var course = _courses.firstWhere((c) => c.id == courseId);
     var course = await getCourseById(courseId);
     var index = course.events.indexWhere((e) => e.id == event.id);
     course.events[index] = event;
@@ -128,7 +127,6 @@ class CourseService {
     required DateTime endDateTime,
     String? comment,
   }) async {
-    // final course = _courses.firstWhere((c) => c.id == courseId);
     final course = await getCourseById(courseId);
     final newTimeBookingId = _getNextTimeBookingId(course);
 
@@ -145,7 +143,6 @@ class CourseService {
 
   Future<void> deleteTimeBookingFromCourse(
       String courseId, int timeBookingId) async {
-    // final course = _courses.firstWhere((c) => c.id == courseId);
     final course = await getCourseById(courseId);
     course.timeBookings.removeWhere((booking) => booking.id == timeBookingId);
     await _coursesBox.put(courseId, course);
@@ -158,7 +155,6 @@ class CourseService {
     required DateTime endDateTime,
     String? comment,
   }) async {
-    // final course = _courses.firstWhere((c) => c.id == courseId);
     final course = await getCourseById(courseId);
     final index = course.timeBookings
         .indexWhere((booking) => booking.id == timeBookingId);

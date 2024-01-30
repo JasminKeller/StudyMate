@@ -2,7 +2,6 @@ import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:studymate/entity/course.dart';
 import '../../entity/event.dart';
 import '../../providers/course_provider.dart';
 import '../../services/snackbar_service.dart';
@@ -140,7 +139,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
 
       // Überprüfe, ob sich der Erinnerungsstatus geändert hat
       bool isReminderChanged = (widget.event?.isReminderActive ?? false) != isReminderActive;
-      // Erstelle eine Instanz des EventProviders
+      // Instanz des EventProviders
       CourseProvider courseProvider = Provider.of<CourseProvider>(context, listen: false);
 
       if (widget.event == null) {
@@ -187,8 +186,6 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
       if (isReminderChanged) {
         snackbarService.showReminderUpdatedSnackbar(context, isReminderActive);
       }
-
-      // CourseProvider courseProvider = context.read<CourseProvider>();
       await courseProvider.readCourses();
       Navigator.of(context).pop();
     }
@@ -222,12 +219,9 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
 
     if (confirm) {
       AwesomeNotifications().cancel(widget.event!.id!);
-      // Erstelle eine Instanz des EventProviders
+      // Instanz des EventProviders
       CourseProvider courseProvider = Provider.of<CourseProvider>(context, listen: false);
       await courseProvider.deleteEventFromCourse(widget.courseID, widget.event!.id);
-      // await CourseService.instance.deleteEventFromCourse(widget.courseID, widget.event!.id);
-      // CourseProvider courseProvider = context.read<CourseProvider>();
-      // await courseProvider.readCourses();
       Navigator.of(context).pop();
     }
   }
