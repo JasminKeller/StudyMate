@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import '../../../providers/course_provider.dart';
 import '../../entity/course.dart';
 import '../../entity/time_booking.dart';
-import '../../services/course_service.dart';
 
 class TimeBookingListWidget extends StatefulWidget {
   final Function(TimeBooking) onEdit;
