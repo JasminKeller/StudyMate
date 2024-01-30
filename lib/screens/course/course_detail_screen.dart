@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../entity/course.dart';
 import '../../providers/course_provider.dart';
-import '../../services/course_repository.dart';
+import '../../services/course_service.dart';
 import '../../services/snackbar_service.dart';
 import '../../widgets/empty_state_widget.dart';
 import '../../widgets/lists/event_list_widget.dart';
@@ -22,42 +22,6 @@ class CourseDetailScreen extends StatefulWidget {
 
 class _CourseDetailScreenState extends State<CourseDetailScreen> {
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          widget.course.courseName,
-          style: const TextStyle(
-            fontSize: 20,
-          ),
-        ),
-        actions: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.edit),
-            onPressed: _editCourseName,
-          ),
-          IconButton(
-            icon: const Icon(Icons.delete),
-            onPressed: _confirmDeleteCourse,
-          ),
-        ],
-      ),
-      body: Column(
-        children: [
-          const SizedBox(height: 20),
-          Expanded(
-            child: _buildEventContent(),
-          ),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => _navigateToEventDetailScreen(null),
-        icon: const Icon(Icons.add),
-        label: const Text('Prüfung/Abgabe hinzufügen'),
-      ),
-    );
-  }
 
   void _navigateToEventDetailScreen(Event? event) {
     Navigator.of(context).push(
@@ -99,7 +63,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
   }
 
   Future<void> _deleteCourseAndEvents(String courseId) async {
-    final List<Event> events = await CourseRepository.instance.getEventsFromCourse(courseId);
+    final List<Event> events = await CourseService.instance.getEventsFromCourse(courseId);
     for (final Event event in events) {
       if (event.isReminderActive && event.reminderDateTime != null && event.reminderDateTime!.isAfter(DateTime.now())) {
         AwesomeNotifications().cancel(event.id!);
@@ -108,7 +72,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
         }
       }
     }
-    await CourseRepository.instance.deleteCourse(courseId);
+    await CourseService.instance.deleteCourse(courseId);
   }
 
 
@@ -141,7 +105,8 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
     );
 
     if (newName != null && newName.isNotEmpty && newName != widget.course.courseName) {
-      await CourseRepository.instance.updateCourse(courseId: widget.course.id, courseName: newName);
+      var courseProvider = Provider.of<CourseProvider>(context, listen: false);
+      await courseProvider.updateCourse(widget.course.id, newName);
       setState(() {
         widget.course.courseName = newName;
       });
@@ -162,4 +127,44 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
       },
     );
   }
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          widget.course.courseName,
+          style: const TextStyle(
+            fontSize: 20,
+          ),
+        ),
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.edit),
+            onPressed: _editCourseName,
+          ),
+          IconButton(
+            icon: const Icon(Icons.delete),
+            onPressed: _confirmDeleteCourse,
+          ),
+        ],
+      ),
+      body: Column(
+        children: [
+          const SizedBox(height: 20),
+          Expanded(
+            child: _buildEventContent(),
+          ),
+        ],
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () => _navigateToEventDetailScreen(null),
+        icon: const Icon(Icons.add),
+        label: const Text('Prüfung/Abgabe hinzufügen'),
+      ),
+    );
+  }
+
+
 }

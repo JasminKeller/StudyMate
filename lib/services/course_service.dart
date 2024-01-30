@@ -1,18 +1,19 @@
 import 'package:flutter/foundation.dart';
 import 'package:hive/hive.dart';
-import 'package:studymate/providers/course_provider.dart';
 
 import '../entity/course.dart';
 import '../entity/event.dart';
 import '../entity/time_booking.dart';
 
-class CourseRepository {
-  static CourseRepository instance = CourseRepository._privateConstructor();
-  // final _courses = <Course>[];
+class CourseService {
 
-  Box<Course> get coursesBox => Hive.box<Course>('courses');
+  // Service wird vom Provider aufgerufen
+  // Service ruft Hive direkt auf
 
-  CourseRepository._privateConstructor() {}
+  static final CourseService instance = CourseService._privateConstructor();
+  final Box<Course> _coursesBox = Hive.box<Course>('courses');
+
+  CourseService._privateConstructor() {}
 
   int _getNextEventId(Course course) {
     int highestId = 0;
@@ -25,44 +26,29 @@ class CourseRepository {
   }
 
   Future<List<Course>> getCourses() async {
-    return coursesBox.values.toList();
-    // return _courses;
+    return _coursesBox.values.toList();
   }
 
-  /* without provider
-  Future<void> addCourse({
-    required String courseName,
-  }) async {
+  Future<void> addCourse({required String courseName}) async {
     var courseId = DateTime.now().millisecondsSinceEpoch.toString();
     var newCourse = Course(id: courseId, courseName: courseName);
-    await coursesBox.put(newCourse.id, newCourse);
-  }
-   */
-
-  // with Provider
-  Future<void> addCourse(CourseProvider courseProvider, {
-    required String courseName,
-  }) async {
-    var courseId = DateTime.now().millisecondsSinceEpoch.toString();
-    var newCourse = Course(id: courseId, courseName: courseName);
-    await coursesBox.put(newCourse.id, newCourse);
-    await courseProvider.readCourseWithLoadingState();
+    await _coursesBox.put(newCourse.id, newCourse);
   }
 
 
   Future<void> deleteCourse(String courseId) async {
-    await coursesBox.delete(courseId);
+    await _coursesBox.delete(courseId);
   }
 
   Future<void> updateCourse(
       {required String courseId, required String courseName}) async {
     final course = await getCourseById(courseId);
     course.courseName = courseName;
-    await coursesBox.put(courseId, course);
+    await _coursesBox.put(courseId, course);
   }
 
   Future<Course> getCourseById(String courseId) async {
-    return coursesBox.get(courseId)!; // TODO: check if null
+    return _coursesBox.get(courseId)!; // TODO: check if null
   }
 
   // Event Methoden
@@ -105,7 +91,7 @@ class CourseRepository {
       isReminderActive: isReminderActive,
     );
     course.events.add(newEvent);
-    await coursesBox.put(courseId, course);
+    await _coursesBox.put(courseId, course);
     return newEventId;
   }
 
@@ -113,7 +99,7 @@ class CourseRepository {
     // var course = _courses.firstWhere((c) => c.id == courseId);
     var course = await getCourseById(courseId);
     course.events.removeWhere((event) => event.id == eventId);
-    await coursesBox.put(courseId, course);
+    await _coursesBox.put(courseId, course);
   }
 
   Future<void> updateEventFromCourse(String courseId, Event event) async {
@@ -121,7 +107,7 @@ class CourseRepository {
     var course = await getCourseById(courseId);
     var index = course.events.indexWhere((e) => e.id == event.id);
     course.events[index] = event;
-    await coursesBox.put(courseId, course);
+    await _coursesBox.put(courseId, course);
   }
 
   // TimeBooking Methoden
@@ -155,7 +141,7 @@ class CourseRepository {
       courseId: courseId,
     );
     course.timeBookings.add(newTimeBooking);
-    await coursesBox.put(courseId, course);
+    await _coursesBox.put(courseId, course);
   }
 
   Future<void> deleteTimeBookingFromCourse(
@@ -163,7 +149,7 @@ class CourseRepository {
     // final course = _courses.firstWhere((c) => c.id == courseId);
     final course = await getCourseById(courseId);
     course.timeBookings.removeWhere((booking) => booking.id == timeBookingId);
-    await coursesBox.put(courseId, course);
+    await _coursesBox.put(courseId, course);
   }
 
   Future<void> updateTimeBookingInCourse({
@@ -187,6 +173,6 @@ class CourseRepository {
     );
 
     course.timeBookings[index] = updatedTimeBooking;
-    await coursesBox.put(courseId, course);
+    await _coursesBox.put(courseId, course);
   }
 }

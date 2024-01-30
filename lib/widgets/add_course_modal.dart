@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/course_provider.dart';
-import '../services/course_repository.dart';
+import '../services/course_service.dart';
 
 class AddCourseModal extends StatelessWidget {
   const AddCourseModal({Key? key}) : super(key: key);
@@ -12,13 +12,14 @@ class AddCourseModal extends StatelessWidget {
     String newCourseName = '';
     var textEditingController = TextEditingController();
 
-    void _addCourse() async {
+    void addCourse() async {
       if (newCourseName.isNotEmpty) {
         var courseProvider = Provider.of<CourseProvider>(context, listen: false);
-        await CourseRepository.instance.addCourse(courseProvider, courseName: newCourseName);
+        await courseProvider.addCourse(courseName: newCourseName);
         Navigator.of(context).pop();
       }
     }
+
 
     return DraggableScrollableSheet(
       initialChildSize: 0.55,
@@ -35,11 +36,11 @@ class AddCourseModal extends StatelessWidget {
                 controller: textEditingController,
                 onChanged: (value) => newCourseName = value,
                 decoration: const InputDecoration(labelText: 'Neuer Kurs hinzufügen'),
-                onEditingComplete: _addCourse,
+                onEditingComplete: addCourse,
               ),
               const SizedBox(height: 30),
               ElevatedButton(
-                onPressed: _addCourse,
+                onPressed: addCourse,
                 child: const Text('Hinzufügen'),
               ),
             ],

@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../../entity/event.dart';
 import '../../providers/course_provider.dart';
-import '../../services/course_repository.dart';
+import '../../services/course_service.dart';
 import '../../services/snackbar_service.dart';
 import '../../utils/notification_helper.dart';
 
@@ -143,7 +143,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
 
       if (widget.event == null) {
         // Neues Event erstellen und hinzufügen
-        int newEventId = await CourseRepository.instance.addEventToCourse(
+        int newEventId = await CourseService.instance.addEventToCourse(
           widget.courseID,
           eventName,
           eventDate!,
@@ -165,7 +165,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
         widget.event!.reminderDateTime = reminderDateTime;
         widget.event!.isReminderActive = isReminderActive;
 
-        await CourseRepository.instance.updateEventFromCourse(widget.courseID, widget.event!);
+        await CourseService.instance.updateEventFromCourse(widget.courseID, widget.event!);
         if (isReminderChanged) {
           if (isReminderActive) {
             await NotificationHelper.checkPermissionsAndScheduleSingleNotification(
@@ -219,7 +219,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
 
     if (confirm) {
       AwesomeNotifications().cancel(widget.event!.id!);
-      await CourseRepository.instance.deleteEventFromCourse(widget.courseID, widget.event!.id);
+      await CourseService.instance.deleteEventFromCourse(widget.courseID, widget.event!.id);
       CourseProvider courseProvider = context.read<CourseProvider>();
       await courseProvider.readCourses();
       Navigator.of(context).pop();

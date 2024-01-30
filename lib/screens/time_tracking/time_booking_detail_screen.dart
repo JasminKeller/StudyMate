@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../../entity/time_booking.dart';
 import '../../providers/course_provider.dart';
-import '../../services/course_repository.dart';
+import '../../services/course_service.dart';
 
 class TimeBookingDetailScreen extends StatefulWidget {
   final TimeBooking? booking;
@@ -122,7 +122,7 @@ class _TimeBookingDetailScreenState extends State<TimeBookingDetailScreen> {
         String comment = commentController!.text.isEmpty ? 'Kein Kommentar' : commentController!.text;
         if (widget.booking == null) {
           // Neue Zeitbuchung anlegen
-          await CourseRepository.instance.addTimeBookingToCourse(
+          await CourseService.instance.addTimeBookingToCourse(
             courseId: selectedCourseId!,
             startDateTime: selectedStartTime!,
             endDateTime: selectedEndTime!,
@@ -130,7 +130,7 @@ class _TimeBookingDetailScreenState extends State<TimeBookingDetailScreen> {
           );
         } else {
           // Zeitbuchung anpassen
-          await CourseRepository.instance.updateTimeBookingInCourse(
+          await CourseService.instance.updateTimeBookingInCourse(
             timeBookingId: widget.booking!.id,
             courseId: selectedCourseId!,
             startDateTime: selectedStartTime!,
