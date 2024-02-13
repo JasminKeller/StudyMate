@@ -12,27 +12,27 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-          uses: actions/checkout@v2
+        uses: actions/checkout@v2
 
       - name: Setup Java
-          uses: actions/setup-java@v4
-          with:
-            distribution: 'zulu'
-            java-version: '11.0.x'
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '11.0.x'
 
       - name: Setup Flutter
-          uses: subosito/flutter-action@v2
-          with:
-            flutter-version: '3.13.9'
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.13.9'
 
       - name: Get dependencies
-          run: flutter pub get
+        run: flutter pub get
 
       - name: Run tests
-          run: flutter test
+        run: flutter test
 
       - name: Build APK
-          run: flutter build apk --release --split-per-abi
+        run: flutter build apk --release --split-per-abi
 
       - name: Upload APK to GitHub Releases
         uses: ncipollo/release-action@v1
