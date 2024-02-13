@@ -4,6 +4,8 @@ import 'package:studymate/entity/time_booking.dart';
 import 'event.dart';
 part 'course.g.dart';
 
+
+
 @HiveType(typeId: 0)
 class Course extends HiveObject{
 

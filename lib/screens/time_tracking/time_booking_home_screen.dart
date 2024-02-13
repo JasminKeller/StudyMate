@@ -60,6 +60,7 @@ class _TimeTrackingScreenState extends State<TimeTrackingScreen> {
       ),
       floatingActionButton: hasCourses
           ? FloatingActionButton.extended(
+        heroTag: 'addTimeBooking_btn',
         onPressed: () => _navigateToAddTimeBookingScreen(null),
         icon: const Icon(Icons.add),
         label: const Text('Zeitbuchung hinzufügen'),

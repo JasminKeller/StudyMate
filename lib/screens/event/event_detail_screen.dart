@@ -4,7 +4,6 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../../entity/event.dart';
 import '../../providers/course_provider.dart';
-import '../../services/course_repository.dart';
 import '../../services/snackbar_service.dart';
 import '../../utils/notification_helper.dart';
 
@@ -140,16 +139,19 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
 
       // Überprüfe, ob sich der Erinnerungsstatus geändert hat
       bool isReminderChanged = (widget.event?.isReminderActive ?? false) != isReminderActive;
+      // Instanz des EventProviders
+      CourseProvider courseProvider = Provider.of<CourseProvider>(context, listen: false);
 
       if (widget.event == null) {
-        // Neues Event erstellen und hinzufügen
-        int newEventId = await CourseRepository.instance.addEventToCourse(
+
+        int newEventId = await courseProvider.addEventToCourse(
           widget.courseID,
           eventName,
           eventDate!,
           reminderDateTime,
           isReminderActive,
         );
+
         if (isReminderActive) {
           await NotificationHelper.checkPermissionsAndScheduleSingleNotification(
             notificationId: newEventId,
@@ -165,7 +167,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
         widget.event!.reminderDateTime = reminderDateTime;
         widget.event!.isReminderActive = isReminderActive;
 
-        await CourseRepository.instance.updateEventFromCourse(widget.courseID, widget.event!);
+        await courseProvider.updateEventFromCourse(widget.courseID, widget.event!);
         if (isReminderChanged) {
           if (isReminderActive) {
             await NotificationHelper.checkPermissionsAndScheduleSingleNotification(
@@ -184,8 +186,6 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
       if (isReminderChanged) {
         snackbarService.showReminderUpdatedSnackbar(context, isReminderActive);
       }
-
-      CourseProvider courseProvider = context.read<CourseProvider>();
       await courseProvider.readCourses();
       Navigator.of(context).pop();
     }
@@ -219,9 +219,9 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
 
     if (confirm) {
       AwesomeNotifications().cancel(widget.event!.id!);
-      await CourseRepository.instance.deleteEventFromCourse(widget.courseID, widget.event!.id);
-      CourseProvider courseProvider = context.read<CourseProvider>();
-      await courseProvider.readCourses();
+      // Instanz des EventProviders
+      CourseProvider courseProvider = Provider.of<CourseProvider>(context, listen: false);
+      await courseProvider.deleteEventFromCourse(widget.courseID, widget.event!.id);
       Navigator.of(context).pop();
     }
   }

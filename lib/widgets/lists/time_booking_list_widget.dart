@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import '../../../providers/course_provider.dart';
 import '../../entity/course.dart';
 import '../../entity/time_booking.dart';
-import '../../services/course_repository.dart';
 
 class TimeBookingListWidget extends StatefulWidget {
   final Function(TimeBooking) onEdit;
@@ -84,8 +83,10 @@ class _TimeBookingListWidgetState extends State<TimeBookingListWidget> {
   }
 
   Future<void> _deleteBooking(Course course, TimeBooking booking) async {
-    await CourseRepository.instance.deleteTimeBookingFromCourse(course.id, booking.id);
-    await Provider.of<CourseProvider>(context, listen: false).readCourse(course.id);
+    // Instanz des EventProviders
+    CourseProvider courseProvider = Provider.of<CourseProvider>(context, listen: false);
+    await courseProvider.deleteTimeBookingFromCourse(course.id, booking.id);
+
   }
 
   String _calculateTotalDuration(List<TimeBooking> timeBookings) {
