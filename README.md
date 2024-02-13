@@ -62,6 +62,7 @@ Dieser Workflow wird durch Pushes in die `main`- und `dev`-Branches ausgelöst.
 - **Setup Java**: Konfiguriert die Java-Umgebung, die für den Build erforderlich ist.
 - **Flutter Action**: Stellt Flutter zur Verfügung und wählt die richtige Version für den Build aus.
 - **Dependencies**: Lädt alle Abhängigkeiten herunter.
+- **Run Tests**: Führt alle Flutter-Tests im Projekt aus.
 - **Build**: Erstellt die APK-Datei der App.
 - **Release**: Lädt die gebaute APK als ein Artefakt hoch und erstellt ein Release-Tag.
 
