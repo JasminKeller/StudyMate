@@ -30,7 +30,7 @@ Die Architektur der App ist in verschiedene Verzeichnisse aufgeteilt:
 - `widgets`: Wiederverwendbare Widget-Komponenten, die in den Bildschirmen verwendet werden.
 
 ## Architecture Pattern Diagram
-![Architecture Pattern Diagram ](readme_images/architecture_diagram.png)
+![Architecture Pattern Diagram ](readme_images/architecture_diagram_2.png)
 
 
 ## Vertiefungsthema "Store Releases"
