@@ -44,7 +44,7 @@ Bitte sei dir folgender Punkte schon vorab bewusst:
 - Du brauchst einen Google Developer Account, der einmalig 25$ kostet.
 - Du musst deine Identität bestätigen.
 - Du musst Screenshots für ein Tablet in genauer Grösse und Proportion angeben.
-- Du brauchst einen Link zu deiner Datenschutzerklärung. Hier die Datenschutzerklärung von StudyMate: [Datenschutzerklärung](https://link.zur.datenschutzerklaerung)
+- Du brauchst einen Link zu deiner Datenschutzerklärung. Hier die Datenschutzerklärung von StudyMate: [Datenschutzerklärung](https://jasminkeller.wixsite.com/jakedev)
 - Bevor du die App online bringen kannst, musst du einen geschlossenen Test mit 20 Testern durchführen, der 2 Wochen aktiv läuft.
 
 Die Veröffentlichung einer App im Store ist ein komplexer Prozess, der sorgfältige Planung und Vorbereitung erfordert.
