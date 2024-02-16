@@ -82,3 +82,13 @@ Der vollständige CI/CD-Prozess bis zur Veröffentlichung im Google Play Store w
 Interessierte, die mehr über den Automatisierungsprozess von App-Builds und -Releases lernen möchten, sollten sich das Video "Flutter App Deployment - Leverage Codemagic CD to publish your app to Google Play Store" auf [YouTube](https://www.youtube.com/watch?v=mg8_pM7sGM8) ansehen, das eine detaillierte Anleitung bietet.
 
 
+## Eingesetzte Packages
+Folgende Packages wurden in diesem Projekt eingesetzt:
+
+- [provider](https://pub.dev/packages/provider): Ein State-Management-Paket, das die Verwaltung des App-States vereinfacht und eine effiziente Datenübertragung zwischen den Widgets ermöglicht.
+- [awesome_notifications](https://pub.dev/packages/awesome_notifications): Ermöglicht das Senden von vielfältigen Benachrichtigungen an den Benutzer. Mit diesem Paket können lokale und push-basierte Benachrichtigungen einfach implementiert werden.
+- [permission_handler](https://pub.dev/packages/permission_handler): Bietet eine vereinheitlichte Methode zur Anfrage und Verwaltung von App-Berechtigungen.
+- [flutter_automation](https://pub.dev/packages/flutter_automation): Hilft bei der Automatisierung häufiger Aufgaben in Flutter-Projekten wie dem Erzeugen von Icons, Splash-Screens und der Initialisierung von Firebase.
+- [hive](https://pub.dev/packages/hive): Ein leichtgewichtiges und schnelles NoSQL-Datenbanksystem für Flutter. Es wird verwendet, um lokale Daten effizient zu speichern und abzurufen.
+- [hive_flutter](https://pub.dev/packages/hive_flutter): Erweitert Hive um Widgets und andere Funktionalitäten, die speziell für Flutter entwickelt wurden.
+- [path_provider](https://pub.dev/packages/path_provider): Findet den korrekten Dateipfad für Daten, die lokal auf dem Gerät gespeichert werden sollen.
