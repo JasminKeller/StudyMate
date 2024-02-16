@@ -30,7 +30,7 @@ Die Architektur der App ist in verschiedene Verzeichnisse aufgeteilt:
 - `widgets`: Wiederverwendbare Widget-Komponenten, die in den Bildschirmen verwendet werden.
 
 ## Architecture Pattern Diagram
-![Architecture Pattern Diagram ](readme_images/architecture_diagram.png)
+![Architecture Pattern Diagram ](readme_images/architecture_diagram_2.png)
 
 
 ## Vertiefungsthema "Store Releases"
@@ -44,13 +44,14 @@ Bitte sei dir folgender Punkte schon vorab bewusst:
 - Du brauchst einen Google Developer Account, der einmalig 25$ kostet.
 - Du musst deine Identität bestätigen.
 - Du musst Screenshots für ein Tablet in genauer Grösse und Proportion angeben.
-- Du brauchst einen Link zu deiner Datenschutzerklärung.
+- Du brauchst einen Link zu deiner Datenschutzerklärung. Hier die Datenschutzerklärung von StudyMate: [Datenschutzerklärung](https://link.zur.datenschutzerklaerung)
 - Bevor du die App online bringen kannst, musst du einen geschlossenen Test mit 20 Testern durchführen, der 2 Wochen aktiv läuft.
 
 Die Veröffentlichung einer App im Store ist ein komplexer Prozess, der sorgfältige Planung und Vorbereitung erfordert.
 
+Sobald die App im Google Play Store veröffentlicht ist, wird der Link hier veröffentlicht.
 
-
+![Google Play Store ](readme_images/study_mate_google_play_store.png)
 
 ## Continuous Integration and Delivery (CI/CD) Workflow
 
