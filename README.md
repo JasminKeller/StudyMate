@@ -46,6 +46,7 @@ Bitte sei dir folgender Punkte schon vorab bewusst:
 - Du musst Screenshots für ein Tablet in genauer Grösse und Proportion angeben.
 - Du brauchst einen Link zu deiner Datenschutzerklärung. Hier die Datenschutzerklärung von StudyMate: [Datenschutzerklärung](https://jasminkeller.wixsite.com/jakedev)
 - Bevor du die App online bringen kannst, musst du einen geschlossenen Test mit 20 Testern durchführen, der 2 Wochen aktiv läuft.
+- Nach dem der Geschlossener Test abgeschlossen ist kannst du Produktionszugriff, mittels eines Fragebogens zum geschlossenen Test, beantragen welches nochmals bis zu 7 Tage dauern kann.
 
 Die Veröffentlichung einer App im Store ist ein komplexer Prozess, der sorgfältige Planung und Vorbereitung erfordert.
 
