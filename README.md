@@ -50,7 +50,7 @@ Bitte sei dir folgender Punkte schon vorab bewusst:
 
 Die Veröffentlichung einer App im Store ist ein komplexer Prozess, der sorgfältige Planung und Vorbereitung erfordert.
 
-Sobald die App im Google Play Store veröffentlicht ist, wird der Link hier veröffentlicht.
+Die App ist Produktionsreif und kann im Google Play Store unter folgendem [Link](https://play.google.com/store/apps/details?id=ch.hftm.studymate) heruntergeladen werden. 
 
 ![Google Play Store ](readme_images/study_mate_google_play_store.png)
 
