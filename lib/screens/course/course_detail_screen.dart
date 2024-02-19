@@ -53,9 +53,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
     ) ?? false;
 
     if (confirm) {
-      var courseProvider = Provider.of<CourseProvider>(context, listen: false);
-      await courseProvider.deleteCourse(widget.course.id);
-
+      _deleteCourseAndEvents(widget.course.id);
       Navigator.of(context).pop();
     }
   }
@@ -70,7 +68,8 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
         }
       }
     }
-    await CourseService.instance.deleteCourse(courseId);
+    var courseProvider = Provider.of<CourseProvider>(context, listen: false);
+    await courseProvider.deleteCourse(widget.course.id);
   }
 
 
