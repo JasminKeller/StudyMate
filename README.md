@@ -52,7 +52,7 @@ Die Veröffentlichung einer App im Store ist ein komplexer Prozess, der sorgfäl
 
 Die App ist Produktionsreif und kann im Google Play Store unter folgendem [Link](https://play.google.com/store/apps/details?id=ch.hftm.studymate) heruntergeladen werden. 
 
-![Google Play Store ](readme_images/study_mate_google_play_store.png)
+![Google Play Store ](readme_images/study_mate_google_play_store_2.png)
 
 ## Continuous Integration and Delivery (CI/CD) Workflow
 
